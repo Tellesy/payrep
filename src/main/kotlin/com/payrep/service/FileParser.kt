@@ -16,58 +16,41 @@ class FileParser(
 ) {
     private val logger = LoggerFactory.getLogger(FileParser::class.java)
 
-    fun parseFile(file: File, config: FileProcessingConfig): Map<String, Any> {
+    fun parseFile(file: File, config: FileProcessingConfig): List<Map<String, Any>> {
         val mappings = columnMappingRepository.findByFileProcessingConfigId(config.id!!)
-        val parsedData = mutableMapOf<String, Any>()
-
-        when (config.fileType.uppercase()) {
-            "CSV" -> parseCsvFile(file, mappings, parsedData)
-            // Add other file types as needed
+        return when (config.fileType.uppercase()) {
+            "CSV" -> parseCsvFile(file, mappings)
             else -> throw IllegalArgumentException("Unsupported file type: ${config.fileType}")
         }
-
-        return parsedData
     }
 
-    private fun parseCsvFile(
-        file: File,
-        mappings: List<ColumnMapping>,
-        parsedData: MutableMap<String, Any>
-    ) {
-        val reader = CSVReader(FileReader(file))
-        val headers = reader.readNext()
-        
-        if (headers == null) {
-            throw IllegalStateException("CSV file is empty")
-        }
-
-        val columnIndices = mutableMapOf<String, Int>()
-        headers.forEachIndexed { index, header ->
-            columnIndices[header] = index
-        }
-
+    private fun parseCsvFile(file: File, mappings: List<ColumnMapping>): List<Map<String, Any>> {
         val records = mutableListOf<Map<String, Any>>()
-        var line = reader.readNext()
-        
-        while (line != null) {
-            val record = mutableMapOf<String, Any>()
-            mappings.forEach { mapping ->
-                val columnIndex = columnIndices[mapping.columnName]
-                if (columnIndex != null) {
-                    val value = line[columnIndex]
-                    val transformedValue = applyTransformation(value, mapping.transformation)
-                    
-                    // Create nested structure based on entity type
-                    val entityData = parsedData.getOrPut(mapping.entityType) { mutableMapOf<String, Any>() }
-                    (entityData as MutableMap<String, Any>)[mapping.fieldName] = transformedValue
-                }
+        val reader = CSVReader(FileReader(file))
+        try {
+            val headers = reader.readNext()?.toList()
+            if (headers.isNullOrEmpty()) {
+                return emptyList()
             }
-            records.add(record)
-            line = reader.readNext()
-        }
+            val columnIndices = headers.mapIndexed { index, header -> header to index }.toMap()
 
-        reader.close()
-        parsedData["records"] = records
+            var line: Array<String>? = reader.readNext()
+            while (line != null) {
+                val record = mutableMapOf<String, Any>()
+                mappings.forEach { mapping ->
+                    val columnIndex = columnIndices[mapping.columnName]
+                    if (columnIndex != null && columnIndex < line!!.size) {
+                        val value = line!![columnIndex]
+                        record[mapping.fieldName] = applyTransformation(value, mapping.transformation)
+                    }
+                }
+                records.add(record)
+                line = reader.readNext()
+            }
+        } finally {
+            reader.close()
+        }
+        return records
     }
 
     private fun applyTransformation(value: String, transformation: String?): Any {

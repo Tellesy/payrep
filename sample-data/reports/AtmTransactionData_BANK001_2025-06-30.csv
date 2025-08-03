@@ -1,0 +1,2 @@
+atm_id,institution_id,institution_name,branch_name,txn_success_count,txn_failed_count,total_loaded_amount,transaction_category,report_date
+ATM1234,BANK001,ABC Bank,Main Branch,300,10,500000.00,On-us,2025-06-30

@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
 @EnableScheduling
-class PaymentDataAggregationApplication
+open class PaymentDataAggregationApplication
 
 fun main(args: Array<String>) {
     runApplication<PaymentDataAggregationApplication>(*args)

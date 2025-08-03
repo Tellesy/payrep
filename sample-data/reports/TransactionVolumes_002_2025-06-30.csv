@@ -1,0 +1,2 @@
+institution_id,institution_name,channel_code,transaction_type_code,transaction_type_desc,mcc_code,mcc_description,txn_count,txn_total_amount,txn_success_count,txn_failed_count,transaction_category,report_date
+002,JBANK,POS,1200,Purchase,5411,Grocery Stores,1230,185000.50,1210,20,On-us,2025-06-30

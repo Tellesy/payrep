@@ -1,7 +1,7 @@
 package com.payrep.dto
 
 import com.payrep.domain.BankOrTPP
-import com.payrep.domain.BankOrTPP.BankOrTPPType
+import com.payrep.domain.BankOrTPPType
 
 data class BankOrTPPDto(
     val id: Long? = null,

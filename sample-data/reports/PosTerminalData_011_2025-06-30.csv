@@ -1,0 +1,2 @@
+institution_id,institution_name,mcc_code,mcc_description,terminals_issued_count,terminals_delivered_count,terminals_reissued_count,terminals_decom_count,terminals_active_count,terminals_activity_count,terminals_total_count,report_date
+011,ABC Bank,5812,Restaurants,3,5,1,0,230,240,240,2025-06-30

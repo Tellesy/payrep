@@ -1,0 +1,2 @@
+bank_name,txn_success_count,txn_failed_count,total_transaction_amount,transaction_category,report_date
+ABC Bank,1500,30,850000.00,Off-us,2025-06-30

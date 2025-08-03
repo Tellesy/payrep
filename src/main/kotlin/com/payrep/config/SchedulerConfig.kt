@@ -1,21 +1,27 @@
 package com.payrep.config
 
-import com.payrep.services.FileProcessor
+import com.payrep.domain.FileProcessingConfig
+import com.payrep.repository.FileProcessingConfigRepository
+import com.payrep.service.FileIngestionService
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import jakarta.annotation.PostConstruct
 
 @Configuration
 @EnableScheduling
-class SchedulerConfig {
+open class SchedulerConfig {
     
     @Bean
-    fun taskScheduler(): TaskScheduler {
+    open fun taskScheduler(): TaskScheduler {
         val scheduler = ThreadPoolTaskScheduler()
         scheduler.poolSize = 5
         scheduler.threadNamePrefix = "FileProcessor-"
@@ -26,7 +32,8 @@ class SchedulerConfig {
 // Component to handle scheduled tasks
 @Component
 class FileIngestionScheduler(
-    private val fileProcessor: FileProcessor,
+    private val fileIngestionService: FileIngestionService,
+    private val fileProcessingConfigRepository: FileProcessingConfigRepository,
     private val taskScheduler: TaskScheduler
 ) {
     private val logger = LoggerFactory.getLogger(FileIngestionScheduler::class.java)
@@ -40,27 +47,10 @@ class FileIngestionScheduler(
     }
 
     private fun scheduleFileProcessing(config: FileProcessingConfig) {
-        val zoneId = ZoneId.systemDefault()
-        val scheduleTime = config.scheduleTime
-        val currentTime = LocalDateTime.now()
+        logger.info("Scheduling file processing for ${config.bankOrTPP.code}")
         
-        // Calculate first run time
-        val firstRun = currentTime.toLocalDate().atTime(scheduleTime)
-        val firstRunZoned = ZonedDateTime.of(firstRun, zoneId)
-        
-        // If first run time has already passed today, schedule for tomorrow
-        val firstRunTime = if (firstRunZoned.isBefore(ZonedDateTime.now())) {
-            firstRunZoned.plusDays(1)
-        } else {
-            firstRunZoned
-        }
-
-        logger.info("Scheduling file processing for ${config.bankOrTPP.code} at ${firstRunTime}")
-        
-        taskScheduler.scheduleWithFixedDelay(
-            { fileProcessor.processFiles() },
-            firstRunTime.toInstant(),
-            24 * 60 * 60 * 1000 // 24 hours in milliseconds
-        )
+        // For now, we'll use a simple approach - the FileIngestionService already has @Scheduled annotation
+        // This method can be enhanced later to support dynamic scheduling based on config.scheduleTime
+        // Currently, the scheduling is handled by the @Scheduled annotation in FileIngestionService
     }
 }

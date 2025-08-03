@@ -2,6 +2,7 @@ package com.payrep.service
 
 import com.payrep.domain.*
 import com.payrep.repository.*
+import com.payrep.service.*
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.io.File
@@ -12,7 +13,14 @@ import org.slf4j.LoggerFactory
 class FileIngestionService(
     private val fileConfigRepository: FileProcessingConfigRepository,
     private val importLogRepository: ImportLogRepository,
-    private val fileParser: FileParser
+    private val fileParser: FileParser,
+    private val atmTerminalDataRepository: AtmTerminalDataRepository,
+    private val atmTransactionDataRepository: AtmTransactionDataRepository,
+    private val cardLifecycleRepository: CardLifecycleRepository,
+    private val eCommerceCardActivityRepository: ECommerceCardActivityRepository,
+    private val posTerminalDataRepository: PosTerminalDataRepository,
+    private val posTransactionDataRepository: PosTransactionDataRepository,
+    private val transactionVolumeRepository: TransactionVolumeRepository
 ) {
     private val logger = LoggerFactory.getLogger(FileIngestionService::class.java)
 
@@ -56,12 +64,9 @@ class FileIngestionService(
             logger.info("Processing file: ${file.name}")
             
             val parsedData = fileParser.parseFile(file, config)
-            
-            // TODO: Save parsed data to appropriate tables
-            // This will be implemented based on the column mappings
-            
-            importLogSaved.status = ImportLog.ImportStatus.SUCCESS
-            importLogRepository.save(importLogSaved)
+            saveData(parsedData, config.fileType, file.name)
+            val updatedLog = importLogSaved.copy(status = ImportLog.ImportStatus.SUCCESS)
+            importLogRepository.save(updatedLog)
             
             logger.info("Successfully processed file: ${file.name}")
             
@@ -71,9 +76,23 @@ class FileIngestionService(
             file.renameTo(File("${archiveDir.absolutePath}/${file.name}"))
         } catch (e: Exception) {
             logger.error("Error processing file ${file.name}", e)
-            importLog.status = ImportLog.ImportStatus.FAILED
-            importLog.errorMessage = e.message
-            importLogRepository.save(importLog)
+            val failedLog = importLog.copy(status = ImportLog.ImportStatus.FAILED, errorMessage = e.message)
+            importLogRepository.save(failedLog)
+        }
+    }
+
+    private fun saveData(data: List<Map<String, Any>>, fileType: String, fileName: String) {
+        data.forEach { record ->
+            when (fileType) {
+                "ATM Terminal Data" -> atmTerminalDataRepository.save(record.toAtmTerminalData())
+                "ATM Transaction Data" -> atmTransactionDataRepository.save(record.toAtmTransactionData())
+                "Card Lifecycle" -> cardLifecycleRepository.save(record.toCardLifecycle())
+                "E-Commerce Card Activity" -> eCommerceCardActivityRepository.save(record.toECommerceCardActivity())
+                "POS Terminal Data" -> posTerminalDataRepository.save(record.toPosTerminalData())
+                "POS Transaction Data" -> posTransactionDataRepository.save(record.toPosTransactionData())
+                "Transaction Volume" -> transactionVolumeRepository.save(record.toTransactionVolume(fileName))
+                else -> logger.warn("Unsupported file type for data saving: $fileType")
+            }
         }
     }
 }

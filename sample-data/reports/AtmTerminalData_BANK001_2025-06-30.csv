@@ -1,0 +1,2 @@
+institution_id,institution_name,atm_new_count,atm_active_count,atm_inactive_count,atm_maintenance_count,atm_location_type,atm_total_count,report_date
+BANK001,ABC Bank,1,40,1,0,On-premise,41,2025-06-30
