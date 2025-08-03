@@ -38,7 +38,7 @@ class DataSeeder(
             fileProcessingConfigRepository.save(
                 FileProcessingConfig(
                     bankOrTPP = bank,
-                    directoryPath = "/var/payrep/uploads",
+                    directoryPath = "sample-data/incoming",
                     fileNamePattern = "^${fileTypeForPattern}_${bank.code}_\\d{4}-\\d{2}-\\d{2}\\.csv$",
                     scheduleTime = "0 0 1 * * ?", // Daily at 1 AM
                     fileType = fileType
