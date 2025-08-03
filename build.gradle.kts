@@ -15,21 +15,20 @@ dependencies {
     // Spring Boot
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-scheduling")
-    
+
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    
+
     // Database
     runtimeOnly("mysql:mysql-connector-java:8.0.33")
     runtimeOnly("com.oracle.database.jdbc:ojdbc8:21.9.0.0")
-    
+
     // CSV parsing
     implementation("com.opencsv:opencsv:5.9")
-    
+
     // Testing
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }
