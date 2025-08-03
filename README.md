@@ -17,7 +17,7 @@ A Spring Boot application for ingesting, processing, and storing daily reports/f
 - **Spring Boot 3.2.2** (Kotlin)
 - **Gradle** (build tool)
 - **JPA/Hibernate** (database access)
-- **PostgreSQL** (database)
+- **MySQL** (primary database, Oracle also supported)
 - **Spring Scheduler** (file processing scheduling)
 - **OpenCSV** (CSV parsing)
 
@@ -38,12 +38,39 @@ A Spring Boot application for ingesting, processing, and storing daily reports/f
 
 ### Prerequisites
 - Java 17+
-- PostgreSQL database
+- MySQL or Oracle database
 - Gradle
 
 ### Database Setup
-1. Create a PostgreSQL database named `payment_data`
-2. Update database credentials in `application.properties` if needed
+
+#### MySQL (Default)
+1. Create a MySQL database named `payment_data`
+2. Configure database connection using environment variables or application.yml:
+   ```bash
+   export DB_HOST=localhost
+   export DB_PORT=3306
+   export DB_NAME=payment_data
+   export DB_USERNAME=root
+   export DB_PASSWORD=your_password
+   ```
+
+#### Oracle (Alternative)
+1. Create an Oracle database/schema
+2. Set the profile to oracle and configure connection:
+   ```bash
+   export SPRING_PROFILES_ACTIVE=oracle
+   export DB_HOST=your_oracle_host
+   export DB_PORT=1521
+   export DB_NAME=your_oracle_sid
+   export DB_USERNAME=your_username
+   export DB_PASSWORD=your_password
+   ```
+
+#### Configuration Options
+All database settings can be configured via:
+- Environment variables (recommended for production)
+- Direct modification of `application.yml`
+- JVM system properties
 
 ### Running the Application
 ```bash

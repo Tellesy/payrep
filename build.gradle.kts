@@ -22,7 +22,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     
     // Database
-    runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("mysql:mysql-connector-java:8.0.33")
+    runtimeOnly("com.oracle.database.jdbc:ojdbc8:21.9.0.0")
     
     // CSV parsing
     implementation("com.opencsv:opencsv:5.9")
