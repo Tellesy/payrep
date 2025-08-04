@@ -8,3 +8,155 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+### Gradle ###
+# Gradle build system
+.gradle/
+build/
+
+# Only keep the Gradle wrapper jar
+!gradle/wrapper/gradle-wrapper.jar
+
+### Kotlin ###
+# Compiled files
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.kotlin_module
+*.kotlin_metadata
+*.kotlin_builtins
+*.kapt_scratches/
+
+### Java ###
+# Compiled class file
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+### Build output ###
+/out/
+/build/
+/*/build/
+/**/out/
+/**/build/
+
+### Node / NPM / React ###
+# Dependencies
+node_modules/
+/**/node_modules/
+admin-ui/node_modules/
+
+# Build output
+/dist/
+/**/dist/
+admin-ui/build/
+admin-ui/dist/
+admin-ui/.cache/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+### IDE ###
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# VS Code
+.vscode/
+
+### OS ###
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+### Specific build directories ###
+# Kotlin specific build outputs
+build/kotlin/
+build/classes/
+build/tmp/
+build/snapshot/
+build/libs/
+build/generated/
+build/resolvedMainClassName
+
+# Cache files
+.eslintcache
+.gradle/
+
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# IDE specific files
+*.swp
+*.swo
+*~
+
