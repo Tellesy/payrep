@@ -7,6 +7,10 @@ import UserList from './components/UserList';
 import CreateUser from './components/CreateUser';
 import ChangePassword from './components/ChangePassword';
 import ResetPassword from './components/ResetPassword';
+import BankTppManagement from './components/BankTppManagement';
+import FileConfigManagement from './components/FileConfigManagement';
+import ColumnMappingManagement from './components/ColumnMappingManagement';
+import ImportLogViewer from './components/ImportLogViewer';
 import './App.css';
 
 const App: React.FC = () => {
@@ -20,6 +24,10 @@ const App: React.FC = () => {
                     <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}>
                         <Route index element={<UserList />} />
                         <Route path="users" element={<UserList />} />
+                        <Route path="banks-and-tpps" element={<BankTppManagement />} />
+                        <Route path="file-configs" element={<FileConfigManagement />} />
+                        <Route path="column-mappings" element={<ColumnMappingManagement />} />
+                        <Route path="import-logs" element={<ImportLogViewer />} />
                         <Route path="create-user" element={<CreateUser />} />
                         <Route path="change-password" element={<ChangePassword />} />
                         <Route path="reset-password" element={<ResetPassword />} />

@@ -57,6 +57,7 @@ open class SecurityConfig(private val jwtTokenProvider: JwtTokenProvider) {
                 auth
                     .requestMatchers("/", "/index.html", "/static/**", "/manifest.json", "/favicon.ico", "/logo192.png").permitAll()
                     .requestMatchers("/api/auth/**").permitAll() // Public auth endpoints
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }

@@ -44,9 +44,9 @@ class LoginController(
             ResponseEntity.status(401).body(mapOf(
                 "error" to "Invalid username or password"
             ))
-        } catch (e: Exception) {
-            println("Unexpected error during login: ${e.message}")
-            e.printStackTrace()
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            println("Unexpected error during login: ${ex.message}")
             ResponseEntity.status(500).body(mapOf(
                 "error" to "Internal server error"
             ))

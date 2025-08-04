@@ -27,20 +27,22 @@ class DataSeeder(
         }
     }
 
-    private fun seedAdminUser() {
-        val adminUser = userRepository.findByUsername("admin")
-        if (adminUser != null) {
-            // Update existing admin user's password to ensure it's correct
-            adminUser.password = passwordEncoder.encode("admin")
-            userRepository.save(adminUser)
-        } else {
-            // Create a new admin user if one doesn't exist
-            userRepository.save(User(
-                username = "admin",
+        private fun seedAdminUser() {
+        val adminUsername = "admin"
+        var adminUser = userRepository.findByUsername(adminUsername)
+
+        if (adminUser == null) {
+            adminUser = User(
+                username = adminUsername,
                 password = passwordEncoder.encode("admin"),
-                enabled = true
-            ))
+                enabled = true,
+                roles = mutableSetOf("ROLE_ADMIN")
+            )
+        } else {
+            adminUser.password = passwordEncoder.encode("admin")
+            adminUser.roles.add("ROLE_ADMIN")
         }
+        userRepository.save(adminUser)
     }
 
     private fun seedFileProcessingConfigs(bank: BankOrTPP) {

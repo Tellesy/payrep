@@ -20,6 +20,11 @@ class JwtTokenProvider {
     fun generateToken(authentication: Authentication): String {
         val username = authentication.name
         val claims = Jwts.claims().setSubject(username)
+        
+        // Add authorities/roles to the token
+        val authorities = authentication.authorities.joinToString(",") { it.authority }
+        claims["auth"] = authorities
+        
         val now = Date()
         val validity = Date(now.time + validityInMilliseconds)
 
@@ -33,7 +38,15 @@ class JwtTokenProvider {
 
     fun getAuthentication(token: String): Authentication {
         val claims: Claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).body
-        val authorities = listOf(SimpleGrantedAuthority("ROLE_USER")) // Or extract from token if stored
+        
+        // Extract authorities from token
+        val authoritiesString = claims["auth"] as? String ?: ""
+        val authorities = if (authoritiesString.isNotEmpty()) {
+            authoritiesString.split(",").map { SimpleGrantedAuthority(it) }
+        } else {
+            listOf(SimpleGrantedAuthority("ROLE_USER"))
+        }
+        
         return UsernamePasswordAuthenticationToken(claims.subject, "", authorities)
     }
 

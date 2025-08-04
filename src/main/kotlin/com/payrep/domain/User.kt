@@ -16,5 +16,10 @@ open class User(
     open var password: String = "",
 
     @Column(nullable = false)
-    open var enabled: Boolean = true
+    open var enabled: Boolean = true,
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = [JoinColumn(name = "user_id")])
+    @Column(name = "role")
+    open var roles: MutableSet<String> = mutableSetOf()
 )

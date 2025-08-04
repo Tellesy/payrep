@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "file_processing_config")
 data class FileProcessingConfig(
+    // Primary constructor with all required fields
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

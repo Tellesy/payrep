@@ -1,6 +1,8 @@
 package com.payrep.service
 
 import com.payrep.repository.UserRepository
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -17,11 +19,13 @@ open class CustomUserDetailsService(
         val user = userRepository.findByUsername(username)
             ?: throw UsernameNotFoundException("User not found with username: ${username}")
 
-        return org.springframework.security.core.userdetails.User.builder()
-            .username(user.username)
-            .password(user.password)
-            .disabled(!user.enabled)
-            .authorities("ROLE_ADMIN") // All users are admins for now
-            .build()
+        val authorities: List<GrantedAuthority> = user.roles.map { SimpleGrantedAuthority(it) }
+        return org.springframework.security.core.userdetails.User(
+            user.username,
+            user.password,
+            user.enabled,
+            true, true, true,
+            authorities
+        )
     }
 }
