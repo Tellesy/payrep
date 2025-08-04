@@ -1,0 +1,36 @@
+.bi-container {
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+.controls-paper {
+    padding: 24px;
+    margin-bottom: 24px;
+    background-color: #f9f9f9;
+}
+
+.error-paper {
+    padding: 16px;
+    margin: 24px 0;
+    background-color: #fff3f3;
+}
+
+.chart-card {
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    margin-bottom: 24px;
+    background-color: #f5f9ff;
+}
+
+.summary-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0056b3;
+}
+
+.summary-label {
+    color: #666;
+    font-size: 1rem;
+}
