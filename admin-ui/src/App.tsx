@@ -1,0 +1,34 @@
+import React from 'react';
+import { useAuth } from './context/AuthContext';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+import UserList from './components/UserList';
+import CreateUser from './components/CreateUser';
+import ChangePassword from './components/ChangePassword';
+import ResetPassword from './components/ResetPassword';
+import './App.css';
+
+const App: React.FC = () => {
+    const { isAuthenticated } = useAuth();
+
+    return (
+        <Router>
+            <div className="App">
+                <Routes>
+                    <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+                    <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}>
+                        <Route index element={<UserList />} />
+                        <Route path="users" element={<UserList />} />
+                        <Route path="create-user" element={<CreateUser />} />
+                        <Route path="change-password" element={<ChangePassword />} />
+                        <Route path="reset-password" element={<ResetPassword />} />
+                    </Route>
+                    <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
+                </Routes>
+            </div>
+        </Router>
+    );
+};
+
+export default App;

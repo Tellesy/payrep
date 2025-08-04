@@ -3,21 +3,43 @@ package com.payrep.config
 import com.payrep.domain.BankOrTPP
 import com.payrep.domain.BankOrTPPType
 import com.payrep.domain.FileProcessingConfig
+import com.payrep.domain.User
 import com.payrep.repository.BankOrTPPRepository
 import com.payrep.repository.FileProcessingConfigRepository
+import com.payrep.repository.UserRepository
 import org.springframework.boot.CommandLineRunner
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
 @Component
 class DataSeeder(
     private val bankOrTPPRepository: BankOrTPPRepository,
-    private val fileProcessingConfigRepository: FileProcessingConfigRepository
+    private val fileProcessingConfigRepository: FileProcessingConfigRepository,
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder
 ) : CommandLineRunner {
 
     override fun run(vararg args: String?) {
+        seedAdminUser()
         if (bankOrTPPRepository.count() == 0L) {
             val bank = bankOrTPPRepository.save(BankOrTPP(code = "001", name = "Sample Bank", type = BankOrTPPType.BANK))
             seedFileProcessingConfigs(bank)
+        }
+    }
+
+    private fun seedAdminUser() {
+        val adminUser = userRepository.findByUsername("admin")
+        if (adminUser != null) {
+            // Update existing admin user's password to ensure it's correct
+            adminUser.password = passwordEncoder.encode("admin")
+            userRepository.save(adminUser)
+        } else {
+            // Create a new admin user if one doesn't exist
+            userRepository.save(User(
+                username = "admin",
+                password = passwordEncoder.encode("admin"),
+                enabled = true
+            ))
         }
     }
 
