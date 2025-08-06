@@ -160,6 +160,20 @@ const SimpleLineChart: React.FC<{ data: any[]; title: string; xKey: string; yKey
     );
 };
 
+// Helper function to get the correct analytics title translation key
+const getAnalyticsTitle = (reportType: string): string => {
+    const titleMap: { [key: string]: string } = {
+        'transaction-volume': 'transactionVolumeAnalytics',
+        'atm-transactions': 'atmTransactionsAnalytics',
+        'atm-terminals': 'atmTerminalsAnalytics',
+        'pos-terminals': 'posTerminalsAnalytics',
+        'pos-transactions': 'posTransactionsAnalytics',
+        'card-lifecycle': 'cardLifecycleAnalytics',
+        'ecommerce-activity': 'ecommerceActivityAnalytics'
+    };
+    return titleMap[reportType] || 'businessIntelligence';
+};
+
 // Enhanced chart component with proper data visualization
 const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) => {
     // Handle different data formats from backend
@@ -1221,7 +1235,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
             }}
         >
             <Typography variant="h5" color="primary" gutterBottom sx={{ fontWeight: 'bold' }}>
-                📈 {title.replace('-', ' ').toUpperCase()} ANALYTICS
+                📈 {t(getAnalyticsTitle(title))}
             </Typography>
             {renderReportSpecificData()}
         </Box>
