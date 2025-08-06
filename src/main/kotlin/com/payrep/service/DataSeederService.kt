@@ -4,6 +4,7 @@ import com.payrep.domain.*
 import com.payrep.repository.*
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
+import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -11,6 +12,7 @@ import java.time.LocalDate
 import kotlin.random.Random
 
 @Service
+@Order(1) // Run before ColumnMappingSeederService
 class DataSeederService(
     private val bankOrTPPRepository: BankOrTPPRepository,
     private val fileProcessingConfigRepository: FileProcessingConfigRepository,

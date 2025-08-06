@@ -28,5 +28,5 @@ data class ColumnMapping(
     val transformation: String? = null, // Optional transformation logic
 
     @CreationTimestamp
-    val createdAt: LocalDateTime = LocalDateTime.now()
+    val createdAt: LocalDateTime? = null
 )
