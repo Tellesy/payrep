@@ -1,7 +1,7 @@
 package com.payrep.domain
 
 import java.time.LocalDate
-import javax.persistence.*
+import jakarta.persistence.*
 
 /**
  * Base class for all report types

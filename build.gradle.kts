@@ -17,8 +17,11 @@ dependencies {
     // Spring Boot
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-        implementation("org.springframework.boot:spring-boot-starter-security") // For authentication
+    implementation("org.springframework.boot:spring-boot-starter-security") // For authentication
     implementation("org.springframework.boot:spring-boot-starter-tomcat") // For servlet APIs
+    
+    // JPA API (explicit dependency for Jakarta Persistence)
+    implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")

@@ -7,6 +7,7 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import TableChartIcon from '@mui/icons-material/TableChart';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import LockIcon from '@mui/icons-material/Lock';
 import LockResetIcon from '@mui/icons-material/LockReset';
@@ -104,6 +105,15 @@ const Dashboard: React.FC = () => {
                                     <AssessmentIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Import Logs" />
+                            </ListItemButton>
+                        </ListItem>
+                        <Divider sx={{ my: 1 }} />
+                        <ListItem disablePadding>
+                            <ListItemButton component={Link} to="/dashboard/business-intelligence">
+                                <ListItemIcon>
+                                    <BarChartIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Business Intelligence" />
                             </ListItemButton>
                         </ListItem>
 

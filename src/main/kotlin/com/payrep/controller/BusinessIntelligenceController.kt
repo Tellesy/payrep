@@ -39,27 +39,29 @@ class BusinessIntelligenceController(
     }
     
     @GetMapping("/atm-transactions")
-    fun getATMTransactionData(
+    @PreAuthorize("hasRole('ADMIN')")
+    fun getATMTransactionAnalytics(
         @RequestParam("startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
         @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?
     ): ResponseEntity<Map<String, Any>> {
         val start = startDate ?: LocalDate.now().minusMonths(1)
         val end = endDate ?: LocalDate.now()
         
-        val chartData = reportService.getATMTransactionChartData(start, end)
-        return ResponseEntity.ok(chartData)
+        val data = reportService.getATMTransactionAnalytics(start, end)
+        return ResponseEntity.ok(data)
     }
     
     @GetMapping("/pos-terminals")
-    fun getPOSTerminalData(
+    @PreAuthorize("hasRole('ADMIN')")
+    fun getPOSTerminalAnalytics(
         @RequestParam("startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
         @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?
     ): ResponseEntity<Map<String, Any>> {
         val start = startDate ?: LocalDate.now().minusMonths(1)
         val end = endDate ?: LocalDate.now()
         
-        val chartData = reportService.getPOSTerminalChartData(start, end)
-        return ResponseEntity.ok(chartData)
+        val data = reportService.getPOSTerminalAnalytics(start, end)
+        return ResponseEntity.ok(data)
     }
     
     @GetMapping("/report-summary")

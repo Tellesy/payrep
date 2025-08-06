@@ -3,6 +3,7 @@ package com.payrep.repository
 import com.payrep.domain.*
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
@@ -14,38 +15,31 @@ interface ReportRepository : JpaRepository<Report, Long> {
 }
 
 @Repository
-interface TransactionVolumeReportRepository : JpaRepository<TransactionVolumeReport, Long> {
-    fun findByChannelCode(channelCode: String): List<TransactionVolumeReport>
-    fun findByReportDateBetween(startDate: LocalDate, endDate: LocalDate): List<TransactionVolumeReport>
+interface TransactionVolumeReportRepository : JpaRepository<TransactionVolume, Long> {
+    @Query("SELECT t.channel_code as channel, SUM(t.txn_count) as totalTransactions FROM TransactionVolume t WHERE t.report_date BETWEEN :startDate AND :endDate GROUP BY t.channel_code ORDER BY totalTransactions DESC")
+    fun getTotalTransactionsByChannel(@Param("startDate") startDate: LocalDate, @Param("endDate") endDate: LocalDate): List<Map<String, Any>>
     
-    @Query("SELECT SUM(t.txnCount) FROM TransactionVolumeReport t WHERE t.reportDate BETWEEN :startDate AND :endDate GROUP BY t.channelCode")
-    fun getTotalTransactionsByChannel(startDate: LocalDate, endDate: LocalDate): Map<String, Long>
+    @Query("SELECT t.channel_code as channel, SUM(t.txn_total_amount) as totalAmount FROM TransactionVolume t WHERE t.report_date BETWEEN :startDate AND :endDate GROUP BY t.channel_code ORDER BY totalAmount DESC")
+    fun getTotalAmountByChannel(@Param("startDate") startDate: LocalDate, @Param("endDate") endDate: LocalDate): List<Map<String, Any>>
     
-    @Query("SELECT SUM(t.txnTotalAmount) FROM TransactionVolumeReport t WHERE t.reportDate BETWEEN :startDate AND :endDate GROUP BY t.channelCode")
-    fun getTotalAmountByChannel(startDate: LocalDate, endDate: LocalDate): Map<String, Double>
-    
-    @Query("SELECT SUM(t.txnSuccessCount) as successCount, SUM(t.txnFailedCount) as failedCount FROM TransactionVolumeReport t WHERE t.reportDate BETWEEN :startDate AND :endDate")
-    fun getSuccessFailureRatio(startDate: LocalDate, endDate: LocalDate): Map<String, Long>
+    @Query("SELECT SUM(t.txn_success_count) as successfulTransactions, SUM(t.txn_failed_count) as failedTransactions FROM TransactionVolume t WHERE t.report_date BETWEEN :startDate AND :endDate")
+    fun getSuccessFailureRatio(@Param("startDate") startDate: LocalDate, @Param("endDate") endDate: LocalDate): Map<String, Any>
 }
 
 @Repository
-interface ATMTransactionReportRepository : JpaRepository<ATMTransactionReport, Long> {
-    fun findByReportDateBetween(startDate: LocalDate, endDate: LocalDate): List<ATMTransactionReport>
+interface ATMTransactionReportRepository : JpaRepository<AtmTransactionData, Long> {
+    @Query("SELECT COUNT(*) as totalTransactions FROM AtmTransactionData a WHERE a.report_date BETWEEN :startDate AND :endDate")
+    fun getTotalTransactions(@Param("startDate") startDate: LocalDate, @Param("endDate") endDate: LocalDate): Long
     
-    @Query("SELECT SUM(a.txnSuccessCount) as successCount, SUM(a.txnFailedCount) as failedCount FROM ATMTransactionReport a WHERE a.reportDate BETWEEN :startDate AND :endDate")
-    fun getSuccessFailureRatio(startDate: LocalDate, endDate: LocalDate): Map<String, Long>
-    
-    @Query("SELECT a.atmId, SUM(a.txnSuccessCount + a.txnFailedCount) as totalCount FROM ATMTransactionReport a WHERE a.reportDate BETWEEN :startDate AND :endDate GROUP BY a.atmId ORDER BY totalCount DESC")
-    fun getTopATMsByTransactionVolume(startDate: LocalDate, endDate: LocalDate): List<Map<String, Any>>
+    @Query("SELECT a.atm_id as atmId, COUNT(*) as transactionCount, SUM(a.total_loaded_amount) as totalAmount FROM AtmTransactionData a WHERE a.report_date BETWEEN :startDate AND :endDate GROUP BY a.atm_id ORDER BY COUNT(*) DESC")
+    fun getTopATMsByTransactionVolume(@Param("startDate") startDate: LocalDate, @Param("endDate") endDate: LocalDate): List<Map<String, Any>>
 }
 
 @Repository
-interface POSTerminalReportRepository : JpaRepository<POSTerminalReport, Long> {
-    fun findByReportDateBetween(startDate: LocalDate, endDate: LocalDate): List<POSTerminalReport>
+interface POSTerminalReportRepository : JpaRepository<PosTerminalData, Long> {
+    @Query("SELECT p.mcc_code as mcc, SUM(p.terminals_active_count) as activeTerminals FROM PosTerminalData p WHERE p.report_date BETWEEN :startDate AND :endDate GROUP BY p.mcc_code ORDER BY SUM(p.terminals_active_count) DESC")
+    fun getActiveTerminalsByMCC(@Param("startDate") startDate: LocalDate, @Param("endDate") endDate: LocalDate): List<Map<String, Any>>
     
-    @Query("SELECT p.mccDescription, SUM(p.terminalsActiveCount) as activeCount FROM POSTerminalReport p WHERE p.reportDate BETWEEN :startDate AND :endDate GROUP BY p.mccDescription ORDER BY activeCount DESC")
-    fun getActiveTerminalsByMCC(startDate: LocalDate, endDate: LocalDate): List<Map<String, Any>>
-    
-    @Query("SELECT SUM(p.terminalsIssuedCount) as issuedCount, SUM(p.terminalsDecomCount) as decomCount FROM POSTerminalReport p WHERE p.reportDate BETWEEN :startDate AND :endDate")
-    fun getTerminalLifecycleStats(startDate: LocalDate, endDate: LocalDate): Map<String, Long>
+    @Query("SELECT SUM(p.terminals_issued_count) as issuedCount, SUM(p.terminals_active_count) as activeCount, SUM(p.terminals_decom_count) as decomCount FROM PosTerminalData p WHERE p.report_date BETWEEN :startDate AND :endDate")
+    fun getTerminalLifecycleStats(@Param("startDate") startDate: LocalDate, @Param("endDate") endDate: LocalDate): Map<String, Any>
 }
