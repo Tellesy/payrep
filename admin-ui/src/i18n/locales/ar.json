@@ -168,5 +168,18 @@
   "transactionVolumeAnalytics": "تحليلات حجم المعاملات",
   "monthlyTransactionVolume": "حجم المعاملات الشهرية",
   "transactionVolumeRecordsProcessed": "سجلات حجم المعاملات المعالجة",
-  "unknown": "غير معروف"
+  "unknown": "غير معروف",
+  "totalVolume": "إجمالي الحجم",
+  "totalTransactions": "إجمالي المعاملات",
+  "activeInstitutions": "المؤسسات النشطة",
+  "successfulTransactions": "المعاملات الناجحة",
+  "failedTransactions": "المعاملات الفاشلة",
+  "successRate": "معدل النجاح",
+  "failedRate": "معدل الفشل",
+  "totalAmount": "إجمالي المبلغ",
+  "activeTerminals": "الأجهزة النشطة",
+  "inactiveTerminals": "الأجهزة غير النشطة",
+  "cardsActive": "البطاقات النشطة",
+  "recordsProcessed": "السجلات المعالجة",
+  "noDataAvailable": "لا توجد بيانات متاحة للفترة المحددة"
 }

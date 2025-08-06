@@ -187,11 +187,13 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
         }).format(num);
     };
 
+    const { t } = useTranslation();
+    
     const renderReportSpecificData = () => {
         if (!data || dataPoints === 0) {
             return (
                 <Typography variant="body2" color="warning.main" sx={{ mt: 2 }}>
-                    ⚠️ No data available for selected date range
+                    ⚠️ {t('noDataAvailable')}
                 </Typography>
             );
         }
@@ -201,7 +203,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                 // Prepare data for charts
                 const volumeByInstitution = data.chartData ? 
                     data.chartData.reduce((acc: any, item: any) => {
-                        const inst = item.institution || 'Unknown';
+                        const inst = item.institution || t('unknown');
                         acc[inst] = (acc[inst] || 0) + (item.volume || 0);
                         return acc;
                     }, {}) : {};
@@ -222,110 +224,104 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                         {/* Charts Section - Top */}
                         <Box sx={{ 
                             display: 'flex', 
-                            flexDirection: 'row',
-                            gap: 3, 
+                            flexDirection: { xs: 'column', lg: 'row' },
+                            gap: 3,
                             width: '100%',
-                            minHeight: '400px'
+                            mb: 3
                         }}>
                             <Box sx={{ 
                                 flex: '1 1 60%', 
-                                minWidth: '500px',
+                                minWidth: '300px',
+                                maxWidth: '100%',
                                 p: 3,
                                 backgroundColor: '#fafafa',
                                 borderRadius: 2,
-                                border: '1px solid #e0e0e0'
+                                border: '1px solid #e0e0e0',
+                                overflow: 'visible'
                             }}>
-                                <SimpleBarChart 
-                                    data={volumeInstitutionData} 
-                                    title="Volume by Institution" 
-                                    xKey="institution" 
-                                    yKey="volume" 
-                                    color="#1976d2"
-                                />
+                                <Typography variant="h6" sx={{ mb: 2, textAlign: 'center', color: 'primary.main', fontSize: '1rem' }}>
+                                    {t('volumeByInstitution')}
+                                </Typography>
+                                <Box sx={{ width: '100%', height: '400px', minHeight: '350px' }}>
+                                    <SimpleBarChart 
+                                        data={volumeInstitutionData} 
+                                        title="" 
+                                        xKey="institution" 
+                                        yKey="volume" 
+                                        color="#1976d2"
+                                    />
+                                </Box>
                             </Box>
                             <Box sx={{ 
                                 flex: '1 1 40%', 
-                                minWidth: '350px',
+                                minWidth: '300px',
+                                maxWidth: '100%',
                                 p: 3,
                                 backgroundColor: '#fafafa',
                                 borderRadius: 2,
                                 border: '1px solid #e0e0e0'
                             }}>
-                                <SimplePieChart 
-                                    data={pieData} 
-                                    title="Volume Distribution"
-                                />
-                            </Box>
-                        </Box>
-                        
-                        {/* Data Summary Section - Bottom */}
-                        <Box sx={{ 
-                            width: '100%',
-                            p: 3,
-                            backgroundColor: '#f8f9fa',
-                            borderRadius: 2,
-                            border: '1px solid #e0e0e0'
-                        }}>
-                            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
-                                📊 Transaction Volume Summary
-                            </Typography>
-                            <Box sx={{ 
-                                display: 'flex', 
-                                justifyContent: 'space-around', 
-                                flexWrap: 'wrap', 
-                                gap: 4,
-                                alignItems: 'center'
-                            }}>
+                                <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
+                                    📊 {t('transactionVolumeAnalytics')}
+                                </Typography>
                                 <Box sx={{ 
-                                    textAlign: 'center', 
-                                    minWidth: '200px',
-                                    p: 2,
-                                    backgroundColor: 'white',
-                                    borderRadius: 2,
-                                    boxShadow: 1
+                                    display: 'flex', 
+                                    justifyContent: 'space-around', 
+                                    flexWrap: 'wrap', 
+                                    gap: 4,
+                                    alignItems: 'center'
                                 }}>
-                                    <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
-                                        {formatCurrency(data.totalVolume || 0)}
-                                    </Typography>
-                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        💰 Total Volume
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ 
-                                    textAlign: 'center', 
-                                    minWidth: '200px',
-                                    p: 2,
-                                    backgroundColor: 'white',
-                                    borderRadius: 2,
-                                    boxShadow: 1
-                                }}>
-                                    <Typography variant="h3" color="secondary" sx={{ fontWeight: 'bold' }}>
-                                        {formatNumber(data.totalTransactions || 0)}
-                                    </Typography>
-                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        📈 Total Transactions
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ 
-                                    textAlign: 'center', 
-                                    minWidth: '200px',
-                                    p: 2,
-                                    backgroundColor: 'white',
-                                    borderRadius: 2,
-                                    boxShadow: 1
-                                }}>
-                                    <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
-                                        {volumeInstitutionData.length}
-                                    </Typography>
-                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        🏦 Active Institutions
-                                    </Typography>
+                                    <Box sx={{ 
+                                        textAlign: 'center', 
+                                        minWidth: '200px',
+                                        p: 2,
+                                        backgroundColor: 'white',
+                                        borderRadius: 2,
+                                        boxShadow: 1
+                                    }}>
+                                        <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
+                                            {formatCurrency(data.totalVolume || 0)}
+                                        </Typography>
+                                        <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                            💰 {t('totalVolume')}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ 
+                                        textAlign: 'center', 
+                                        minWidth: '200px',
+                                        p: 2,
+                                        backgroundColor: 'white',
+                                        borderRadius: 2,
+                                        boxShadow: 1
+                                    }}>
+                                        <Typography variant="h3" color="secondary" sx={{ fontWeight: 'bold' }}>
+                                            {formatNumber(data.totalTransactions || 0)}
+                                        </Typography>
+                                        <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                            📈 {t('totalTransactions')}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ 
+                                        textAlign: 'center', 
+                                        minWidth: '200px',
+                                        p: 2,
+                                        backgroundColor: 'white',
+                                        borderRadius: 2,
+                                        boxShadow: 1
+                                    }}>
+                                        <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
+                                            {volumeInstitutionData.length}
+                                        </Typography>
+                                        <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                            🏦 {t('activeInstitutions')}
+                                        </Typography>
+                                    </Box>
                                 </Box>
                             </Box>
                         </Box>
                         
                         <Typography variant="body2" color="success.main" align="center">
-                            📈 {dataPoints} transaction records processed
+                            📈 {dataPoints} {t('transactionVolumeRecordsProcessed')}
                         </Typography>
                     </Box>
                 );
@@ -337,13 +333,13 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                 
                 // Prepare data for charts
                 const successFailurePieData = [
-                    { label: 'Successful', value: data.totalSuccessCount || 0, color: '#2e7d32' },
-                    { label: 'Failed', value: data.totalFailedCount || 0, color: '#d32f2f' }
+                    { label: t('successfulTransactions'), value: data.totalSuccessCount || 0, color: '#2e7d32' },
+                    { label: t('failedTransactions'), value: data.totalFailedCount || 0, color: '#d32f2f' }
                 ];
                 
                 const institutionTransactionData = data.chartData ? 
                     data.chartData.reduce((acc: any, item: any) => {
-                        const inst = item.institution || 'Unknown';
+                        const inst = item.institution || t('unknown');
                         if (!acc[inst]) acc[inst] = { institution: inst, successCount: 0, failedCount: 0 };
                         acc[inst].successCount += item.successCount || 0;
                         acc[inst].failedCount += item.failedCount || 0;
@@ -357,7 +353,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                         {/* Charts Section - Top */}
                         <Box sx={{ 
                             display: 'flex', 
-                            flexDirection: 'row',
+                            flexDirection: { xs: 'column', lg: 'row' },
                             gap: 3, 
                             width: '100%',
                             minHeight: '400px'
@@ -372,7 +368,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             }}>
                                 <SimplePieChart 
                                     data={successFailurePieData} 
-                                    title="Transaction Success Rate"
+                                    title={t('atmSuccessFailureDistribution')}
                                 />
                             </Box>
                             <Box sx={{ 
@@ -382,10 +378,9 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                 backgroundColor: '#fafafa',
                                 borderRadius: 2,
                                 border: '1px solid #e0e0e0'
-                            }}>
-                                <SimpleBarChart 
+                            }}>                                <SimpleBarChart 
                                     data={atmInstitutionData} 
-                                    title="Successful Transactions by Institution" 
+                                    title={t('atmTransactionsByInstitution')} 
                                     xKey="institution" 
                                     yKey="successCount" 
                                     color="#2e7d32"
@@ -402,7 +397,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             border: '1px solid #e0e0e0'
                         }}>
                             <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
-                                🏧 ATM Transaction Analytics
+                                🏧 {t('atmTransactionAnalytics')}
                             </Typography>
                             <Box sx={{ 
                                 display: 'flex', 
@@ -423,7 +418,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                         {formatNumber(data.totalSuccessCount || 0)}
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        ✅ Successful Transactions
+                                        ✅ {t('successfulTransactions')}
                                     </Typography>
                                 </Box>
                                 <Box sx={{ 
@@ -438,7 +433,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                         {formatNumber(data.totalFailedCount || 0)}
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        ❌ Failed Transactions
+                                        ❌ {t('failedTransactions')}
                                     </Typography>
                                 </Box>
                                 <Box sx={{ 
@@ -453,7 +448,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                         {successRate}%
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        📊 Success Rate
+                                        📊 {t('successRate')}
                                     </Typography>
                                 </Box>
                                 <Box sx={{ 
@@ -468,14 +463,14 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                         {formatCurrency(data.totalAmount || 0)}
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        💰 Total Amount
+                                        💰 {t('totalAmount')}
                                     </Typography>
                                 </Box>
                             </Box>
                         </Box>
                         
                         <Typography variant="body2" color="success.main" align="center">
-                            📈 {dataPoints} ATM transaction records processed
+                            📈 {dataPoints} {t('atmTransactionRecordsProcessed')}
                         </Typography>
                     </Box>
                 );
@@ -484,7 +479,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                 // Prepare data for charts
                 const atmTerminalsByInstitution = data.chartData ? 
                     data.chartData.reduce((acc: any, item: any) => {
-                        const inst = item.institution || 'Unknown';
+                        const inst = item.institution || t('unknown');
                         if (!acc[inst]) acc[inst] = { institution: inst, totalCount: 0, activeCount: 0 };
                         acc[inst].totalCount += item.totalCount || 0;
                         acc[inst].activeCount += item.activeCount || 0;
@@ -494,8 +489,8 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                 const atmTerminalData = Object.values(atmTerminalsByInstitution).slice(0, 8);
                 
                 const atmStatusPieData = [
-                    { label: 'Active', value: data.activeTerminals || 0, color: '#2e7d32' },
-                    { label: 'Inactive', value: (data.totalTerminals || 0) - (data.activeTerminals || 0), color: '#d32f2f' }
+                    { label: t('active'), value: data.activeTerminals || 0, color: '#2e7d32' },
+                    { label: t('inactive'), value: (data.totalTerminals || 0) - (data.activeTerminals || 0), color: '#d32f2f' }
                 ];
                 
                 return (
@@ -503,7 +498,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                         {/* Charts Section - Top */}
                         <Box sx={{ 
                             display: 'flex', 
-                            flexDirection: 'row',
+                            flexDirection: { xs: 'column', lg: 'row' },
                             gap: 3, 
                             width: '100%',
                             minHeight: '400px'
@@ -518,7 +513,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             }}>
                                 <SimpleBarChart 
                                     data={atmTerminalData} 
-                                    title="ATM Terminals by Institution" 
+                                    title={t('atmTerminalsByInstitution')} 
                                     xKey="institution" 
                                     yKey="totalCount" 
                                     color="#1976d2"
@@ -534,7 +529,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             }}>
                                 <SimplePieChart 
                                     data={atmStatusPieData} 
-                                    title="Terminal Status Distribution"
+                                    title={t('atmTerminalStatusDistribution')}
                                 />
                             </Box>
                         </Box>
@@ -548,7 +543,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             border: '1px solid #e0e0e0'
                         }}>
                             <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
-                                🏧 ATM Terminal Analytics
+                                🏧 {t('atmTerminalAnalytics')}
                             </Typography>
                             <Box sx={{ 
                                 display: 'flex', 
@@ -569,7 +564,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                         {formatNumber(data.activeTerminals || 0)}
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        ✅ Active Terminals
+                                        ✅ {t('activeTerminals')}
                                     </Typography>
                                 </Box>
                                 <Box sx={{ 
@@ -584,7 +579,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                         {formatNumber((data.totalTerminals || 0) - (data.activeTerminals || 0))}
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        ⚠️ Inactive Terminals
+                                        ⚠️ {t('inactiveTerminals')}
                                     </Typography>
                                 </Box>
                                 <Box sx={{ 
@@ -599,14 +594,14 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                         {data.totalTerminals > 0 ? ((data.activeTerminals / data.totalTerminals) * 100).toFixed(1) : '0'}%
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        📊 Uptime Rate
+                                        📊 {t('uptimeRate')}
                                     </Typography>
                                 </Box>
                             </Box>
                         </Box>
                         
                         <Typography variant="body2" color="success.main" align="center">
-                            📈 {dataPoints} ATM terminal records processed
+                            📈 {dataPoints} {t('atmTerminalRecordsProcessed')}
                         </Typography>
                     </Box>
                 );
@@ -615,7 +610,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                 // Prepare data for charts
                 const posTerminalsByInstitution = data.chartData ? 
                     data.chartData.reduce((acc: any, item: any) => {
-                        const inst = item.institution || 'Unknown';
+                        const inst = item.institution || t('unknown');
                         if (!acc[inst]) acc[inst] = { institution: inst, totalCount: 0, activeCount: 0 };
                         acc[inst].totalCount += item.totalCount || 0;
                         acc[inst].activeCount += item.activeCount || 0;

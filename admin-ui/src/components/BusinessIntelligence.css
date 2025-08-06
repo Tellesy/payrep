@@ -117,3 +117,348 @@
         padding: 16px;
     }
 }
+
+/* Enhanced chart responsiveness */
+.chart-wrapper {
+  width: 100%;
+  height: 400px;
+  min-height: 350px;
+  overflow: visible;
+}
+
+.chart-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #1976d2;
+}
+
+/* Responsive chart containers */
+.bi-chart-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.bi-chart-row {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .bi-chart-row {
+    flex-direction: column;
+  }
+}
+
+.bi-chart-item {
+  flex: 1;
+  min-width: 0;
+  background: #fafafa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+}
+
+/* Ensure chart text is readable */
+.chart-container svg text {
+  font-size: 12px !important;
+  fill: #333 !important;
+}
+
+.chart-container svg .recharts-text {
+  font-size: 11px !important;
+}
+
+/* RTL adjustments for charts */
+[dir="rtl"] .chart-container {
+  direction: ltr;
+}
+
+[dir="rtl"] .chart-title {
+  direction: rtl;
+  text-align: center;
+}
+
+.business-intelligence-container {
+  padding: 20px;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+.business-intelligence-container[dir="rtl"] {
+  text-align: right;
+}
+
+.business-intelligence-container .MuiFormControl-root {
+  margin: 8px;
+  min-width: 200px;
+}
+
+.business-intelligence-container[dir="rtl"] .MuiFormControl-root {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.business-intelligence-container .MuiSelect-root {
+  text-align: left;
+}
+
+.business-intelligence-container[dir="rtl"] .MuiSelect-root {
+  text-align: right;
+}
+
+.business-intelligence-container .MuiInputLabel-root {
+  left: 14px;
+  transform-origin: left;
+}
+
+.business-intelligence-container[dir="rtl"] .MuiInputLabel-root {
+  left: auto;
+  right: 14px;
+  transform-origin: right;
+}
+
+.business-intelligence-container .MuiOutlinedInput-notchedOutline {
+  text-align: left;
+}
+
+.business-intelligence-container[dir="rtl"] .MuiOutlinedInput-notchedOutline {
+  text-align: right;
+}
+
+.business-intelligence-container .chart-container {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  width: 100%;
+  overflow: visible;
+  min-height: 400px;
+}
+
+.business-intelligence-container .summary-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+/* Enhanced responsive design for charts */
+.business-intelligence-container .chart-section {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 1200px) {
+  .business-intelligence-container .chart-section {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.business-intelligence-container .chart-box {
+  background-color: #fafafa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 24px;
+  overflow: visible;
+  min-height: 350px;
+}
+
+.business-intelligence-container .chart-box h6 {
+  text-align: center;
+  margin-bottom: 16px;
+  color: #1976d2;
+  font-weight: 600;
+}
+
+/* Data summary cards responsive design */
+.business-intelligence-container .data-summary {
+  width: 100%;
+  padding: 24px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  margin-top: 24px;
+}
+
+.business-intelligence-container .summary-grid {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .business-intelligence-container .summary-grid {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.business-intelligence-container .summary-card {
+  text-align: center;
+  min-width: 200px;
+  padding: 16px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  flex: 1;
+  max-width: 250px;
+}
+
+.business-intelligence-container .summary-card h3 {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.business-intelligence-container .summary-card h6 {
+  margin-top: 8px;
+  color: #666;
+}
+
+/* RTL support for charts and data */
+.business-intelligence-container.rtl .chart-section {
+  direction: rtl;
+}
+
+.business-intelligence-container.rtl .summary-grid {
+  direction: rtl;
+}
+
+.business-intelligence-container.rtl .summary-card {
+  direction: rtl;
+}
+
+/* Chart responsiveness improvements */
+.business-intelligence-container .chart-wrapper {
+  width: 100%;
+  height: 400px;
+  min-height: 350px;
+  overflow: visible;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .business-intelligence-container .chart-wrapper {
+    height: 300px;
+    min-height: 250px;
+  }
+}
+
+/* Bar chart responsive styling */
+.business-intelligence-container .bar-chart {
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.business-intelligence-container .bar-chart-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 100%;
+  min-width: 100%;
+  padding: 20px 0;
+}
+
+.business-intelligence-container .bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+  flex: 1;
+}
+
+.business-intelligence-container .bar {
+  width: 40px;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.business-intelligence-container .bar:hover {
+  transform: scale(1.05);
+  opacity: 0.8;
+}
+
+.business-intelligence-container .bar-label {
+  font-size: 9px;
+  text-align: center;
+  word-break: break-word;
+  margin-top: 8px;
+  max-width: 60px;
+}
+
+.business-intelligence-container .bar-value {
+  font-size: 10px;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+/* Pie chart responsive styling */
+.business-intelligence-container .pie-chart {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.business-intelligence-container .pie-chart-svg {
+  max-width: 100%;
+  max-height: 80%;
+  width: auto;
+  height: auto;
+}
+
+.business-intelligence-container .pie-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.business-intelligence-container .pie-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.business-intelligence-container .pie-legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+/* Processing status responsive styling */
+.business-intelligence-container .processing-status {
+  text-align: center;
+  margin-top: 16px;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .business-intelligence-container .processing-status {
+    font-size: 12px;
+  }
+}
