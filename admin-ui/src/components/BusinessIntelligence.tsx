@@ -77,7 +77,7 @@ const BusinessIntelligence: React.FC = () => {
     const fetchReportSummary = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('/api/bi/summary', {
+            const response = await fetch('/api/bi/report-summary', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -107,8 +107,20 @@ const BusinessIntelligence: React.FC = () => {
                 case 'atm-transactions':
                     endpoint = '/api/bi/atm-transactions';
                     break;
+                case 'atm-terminals':
+                    endpoint = '/api/bi/atm-terminals';
+                    break;
                 case 'pos-terminals':
                     endpoint = '/api/bi/pos-terminals';
+                    break;
+                case 'pos-transactions':
+                    endpoint = '/api/bi/pos-transactions';
+                    break;
+                case 'card-lifecycle':
+                    endpoint = '/api/bi/card-lifecycle';
+                    break;
+                case 'ecommerce-activity':
+                    endpoint = '/api/bi/ecommerce-activity';
                     break;
                 default:
                     return;
@@ -216,7 +228,11 @@ const BusinessIntelligence: React.FC = () => {
                             >
                                 <MenuItem value="transaction-volume">Transaction Volume</MenuItem>
                                 <MenuItem value="atm-transactions">ATM Transactions</MenuItem>
+                                <MenuItem value="atm-terminals">ATM Terminals</MenuItem>
                                 <MenuItem value="pos-terminals">POS Terminals</MenuItem>
+                                <MenuItem value="pos-transactions">POS Transactions</MenuItem>
+                                <MenuItem value="card-lifecycle">Card Lifecycle</MenuItem>
+                                <MenuItem value="ecommerce-activity">E-Commerce Activity</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>

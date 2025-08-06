@@ -206,6 +206,54 @@ class ReportService(
         )
     }
     
+    fun getATMTerminalAnalytics(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+        // Note: This would need AtmTerminalDataRepository - placeholder implementation
+        return mapOf(
+            "chartData" to emptyList<Map<String, Any>>(),
+            "summary" to mapOf(
+                "totalTerminals" to 0,
+                "totalTransactions" to 0,
+                "averageUptime" to 0.0
+            )
+        )
+    }
+    
+    fun getPOSTransactionAnalytics(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+        // Note: This would need PosTransactionDataRepository - placeholder implementation
+        return mapOf(
+            "chartData" to emptyList<Map<String, Any>>(),
+            "summary" to mapOf(
+                "totalTransactions" to 0,
+                "totalAmount" to 0.0,
+                "averageTransactionAmount" to 0.0
+            )
+        )
+    }
+    
+    fun getCardLifecycleAnalytics(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+        // Note: This would need CardLifecycleRepository - placeholder implementation
+        return mapOf(
+            "chartData" to emptyList<Map<String, Any>>(),
+            "summary" to mapOf(
+                "cardsIssued" to 0,
+                "cardsActivated" to 0,
+                "cardsExpired" to 0
+            )
+        )
+    }
+    
+    fun getECommerceActivityAnalytics(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+        // Note: This would need ECommerceCardActivityRepository - placeholder implementation
+        return mapOf(
+            "chartData" to emptyList<Map<String, Any>>(),
+            "summary" to mapOf(
+                "totalTransactions" to 0,
+                "totalAmount" to 0.0,
+                "uniqueMerchants" to 0
+            )
+        )
+    }
+    
     fun processReportsFromDirectory(directory: String): Int {
         var processedCount = 0
         
