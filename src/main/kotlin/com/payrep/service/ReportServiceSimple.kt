@@ -20,18 +20,26 @@ class ReportServiceSimple(
         return 42
     }
 
-    fun getTransactionVolumeChartData(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+    fun getTransactionVolumeChartData(startDate: LocalDate, endDate: LocalDate, institution: String? = null): Map<String, Any> {
         // Use proper database query with WHERE clause instead of findAll() + filter
         val data = transactionVolumeRepository.findByReportDateBetween(startDate, endDate)
         println("DEBUG: Transaction volume query returned ${data.size} records for date range ${startDate} to ${endDate}")
         
-        val totalVolume = data.sumOf { it.txn_total_amount.toDouble() }
-        val totalTransactions = data.size
+        // Filter by institution if specified
+        val filteredData = if (institution != null && institution.isNotBlank()) {
+            data.filter { it.institution_name.equals(institution, ignoreCase = true) }
+        } else {
+            data
+        }
+        println("DEBUG: After institution filter '${institution}': ${filteredData.size} records")
+        
+        val totalVolume = filteredData.sumOf { it.txn_total_amount.toDouble() }
+        val totalTransactions = filteredData.size
         
         return mapOf(
             "totalVolume" to totalVolume,
             "totalTransactions" to totalTransactions,
-            "chartData" to data.map { mapOf(
+            "chartData" to filteredData.map { mapOf(
                 "date" to it.report_date.toString(),
                 "institution" to it.institution_name,
                 "volume" to it.txn_total_amount.toDouble()
@@ -39,14 +47,22 @@ class ReportServiceSimple(
         )
     }
     
-    fun getATMTransactionAnalytics(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+    fun getATMTransactionAnalytics(startDate: LocalDate, endDate: LocalDate, institution: String? = null): Map<String, Any> {
         // Use proper database query with WHERE clause instead of findAll() + filter
         val data = atmTransactionDataRepository.findByReportDateBetween(startDate, endDate)
         println("DEBUG: ATM transaction query returned ${data.size} records for date range ${startDate} to ${endDate}")
         
-        val totalSuccessCount = data.sumOf { it.txn_success_count }
-        val totalFailedCount = data.sumOf { it.txn_failed_count }
-        val totalAmount = data.sumOf { it.total_loaded_amount.toDouble() }
+        // Filter by institution if specified
+        val filteredData = if (institution != null && institution.isNotBlank()) {
+            data.filter { it.institution_name.equals(institution, ignoreCase = true) }
+        } else {
+            data
+        }
+        println("DEBUG: After institution filter '${institution}': ${filteredData.size} records")
+        
+        val totalSuccessCount = filteredData.sumOf { it.txn_success_count }
+        val totalFailedCount = filteredData.sumOf { it.txn_failed_count }
+        val totalAmount = filteredData.sumOf { it.total_loaded_amount.toDouble() }
         
         return mapOf(
             "totalSuccessCount" to totalSuccessCount,
@@ -61,13 +77,21 @@ class ReportServiceSimple(
         )
     }
     
-    fun getPOSTerminalAnalytics(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+    fun getPOSTerminalAnalytics(startDate: LocalDate, endDate: LocalDate, institution: String? = null): Map<String, Any> {
         // Use proper database query with WHERE clause instead of findAll() + filter
         val data = posTerminalDataRepository.findByReportDateBetween(startDate, endDate)
         println("DEBUG: POS terminal query returned ${data.size} records for date range ${startDate} to ${endDate}")
         
-        val totalTerminals = data.sumOf { it.terminals_total_count }
-        val activeTerminals = data.sumOf { it.terminals_active_count }
+        // Filter by institution if specified
+        val filteredData = if (institution != null && institution.isNotBlank()) {
+            data.filter { it.institution_name.equals(institution, ignoreCase = true) }
+        } else {
+            data
+        }
+        println("DEBUG: After institution filter '${institution}': ${filteredData.size} records")
+        
+        val totalTerminals = filteredData.sumOf { it.terminals_total_count }
+        val activeTerminals = filteredData.sumOf { it.terminals_active_count }
         
         return mapOf(
             "totalTerminals" to totalTerminals,
@@ -81,13 +105,21 @@ class ReportServiceSimple(
         )
     }
     
-    fun getATMTerminalAnalytics(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+    fun getATMTerminalAnalytics(startDate: LocalDate, endDate: LocalDate, institution: String? = null): Map<String, Any> {
         // Use proper database query with WHERE clause instead of findAll() + filter
         val data = atmTerminalDataRepository.findByReportDateBetween(startDate, endDate)
         println("DEBUG: ATM terminal query returned ${data.size} records for date range ${startDate} to ${endDate}")
         
-        val totalTerminals = data.sumOf { it.atm_total_count }
-        val activeTerminals = data.sumOf { it.atm_active_count }
+        // Filter by institution if specified
+        val filteredData = if (institution != null && institution.isNotBlank()) {
+            data.filter { it.institution_name.equals(institution, ignoreCase = true) }
+        } else {
+            data
+        }
+        println("DEBUG: After institution filter '${institution}': ${filteredData.size} records")
+        
+        val totalTerminals = filteredData.sumOf { it.atm_total_count }
+        val activeTerminals = filteredData.sumOf { it.atm_active_count }
         
         return mapOf(
             "totalTerminals" to totalTerminals,
@@ -101,14 +133,22 @@ class ReportServiceSimple(
         )
     }
     
-    fun getPOSTransactionAnalytics(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+    fun getPOSTransactionAnalytics(startDate: LocalDate, endDate: LocalDate, institution: String? = null): Map<String, Any> {
         // Use proper database query with WHERE clause instead of findAll() + filter
         val data = posTransactionDataRepository.findByReportDateBetween(startDate, endDate)
         println("DEBUG: POS transaction query returned ${data.size} records for date range ${startDate} to ${endDate}")
         
-        val totalSuccessTransactions = data.sumOf { it.txn_success_count }
-        val totalFailedTransactions = data.sumOf { it.txn_failed_count }
-        val totalAmount = data.sumOf { it.total_transaction_amount.toDouble() }
+        // Filter by institution if specified
+        val filteredData = if (institution != null && institution.isNotBlank()) {
+            data.filter { it.bank_name.equals(institution, ignoreCase = true) }
+        } else {
+            data
+        }
+        println("DEBUG: After institution filter '${institution}': ${filteredData.size} records")
+        
+        val totalSuccessTransactions = filteredData.sumOf { it.txn_success_count }
+        val totalFailedTransactions = filteredData.sumOf { it.txn_failed_count }
+        val totalAmount = filteredData.sumOf { it.total_transaction_amount.toDouble() }
         
         return mapOf(
             "totalSuccessTransactions" to totalSuccessTransactions,
@@ -123,13 +163,21 @@ class ReportServiceSimple(
         )
     }
     
-    fun getCardLifecycleAnalytics(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+    fun getCardLifecycleAnalytics(startDate: LocalDate, endDate: LocalDate, institution: String? = null): Map<String, Any> {
         // Use proper database query with WHERE clause instead of findAll() + filter
         val data = cardLifecycleRepository.findByReportDateBetween(startDate, endDate)
         println("DEBUG: Card lifecycle query returned ${data.size} records for date range ${startDate} to ${endDate}")
         
-        val totalIssued = data.sumOf { it.cards_issued_count }
-        val totalActivated = data.sumOf { it.cards_activated_count }
+        // Filter by institution if specified
+        val filteredData = if (institution != null && institution.isNotBlank()) {
+            data.filter { it.institution_name.equals(institution, ignoreCase = true) }
+        } else {
+            data
+        }
+        println("DEBUG: After institution filter '${institution}': ${filteredData.size} records")
+        
+        val totalIssued = filteredData.sumOf { it.cards_issued_count }
+        val totalActivated = filteredData.sumOf { it.cards_activated_count }
         
         return mapOf(
             "totalIssued" to totalIssued,
@@ -143,13 +191,21 @@ class ReportServiceSimple(
         )
     }
     
-    fun getECommerceActivityAnalytics(startDate: LocalDate, endDate: LocalDate): Map<String, Any> {
+    fun getECommerceActivityAnalytics(startDate: LocalDate, endDate: LocalDate, institution: String? = null): Map<String, Any> {
         // Use proper database query with WHERE clause instead of findAll() + filter
         val data = eCommerceCardActivityRepository.findByReportDateBetween(startDate, endDate)
         println("DEBUG: E-commerce activity query returned ${data.size} records for date range ${startDate} to ${endDate}")
         
-        val totalEnabledCards = data.sumOf { it.ecommerce_enabled_cards }
-        val totalActiveCards = data.sumOf { it.ecommerce_activity_cards }
+        // Filter by institution if specified
+        val filteredData = if (institution != null && institution.isNotBlank()) {
+            data.filter { it.institution_name.equals(institution, ignoreCase = true) }
+        } else {
+            data
+        }
+        println("DEBUG: After institution filter '${institution}': ${filteredData.size} records")
+        
+        val totalEnabledCards = filteredData.sumOf { it.ecommerce_enabled_cards }
+        val totalActiveCards = filteredData.sumOf { it.ecommerce_activity_cards }
         
         return mapOf(
             "totalEnabledCards" to totalEnabledCards,

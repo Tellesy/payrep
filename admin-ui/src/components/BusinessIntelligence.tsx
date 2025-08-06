@@ -216,30 +216,23 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                 }));
                 
                 return (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
-                        {/* Summary Stats */}
-                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
-                                <Typography variant="h4" color="primary">
-                                    {formatCurrency(data.totalVolume || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Total Volume
-                                </Typography>
-                            </Box>
-                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
-                                <Typography variant="h4" color="secondary">
-                                    {formatNumber(data.totalTransactions || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Total Transactions
-                                </Typography>
-                            </Box>
-                        </Box>
-                        
-                        {/* Charts */}
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ flex: '1 1 400px', minWidth: '400px' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, mt: 2, width: '100%' }}>
+                        {/* Charts Section - Top */}
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'row',
+                            gap: 3, 
+                            width: '100%',
+                            minHeight: '400px'
+                        }}>
+                            <Box sx={{ 
+                                flex: '1 1 60%', 
+                                minWidth: '500px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
                                 <SimpleBarChart 
                                     data={volumeInstitutionData} 
                                     title="Volume by Institution" 
@@ -248,11 +241,84 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                     color="#1976d2"
                                 />
                             </Box>
-                            <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
+                            <Box sx={{ 
+                                flex: '1 1 40%', 
+                                minWidth: '350px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
                                 <SimplePieChart 
                                     data={pieData} 
                                     title="Volume Distribution"
                                 />
+                            </Box>
+                        </Box>
+                        
+                        {/* Data Summary Section - Bottom */}
+                        <Box sx={{ 
+                            width: '100%',
+                            p: 3,
+                            backgroundColor: '#f8f9fa',
+                            borderRadius: 2,
+                            border: '1px solid #e0e0e0'
+                        }}>
+                            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
+                                📊 Transaction Volume Summary
+                            </Typography>
+                            <Box sx={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-around', 
+                                flexWrap: 'wrap', 
+                                gap: 4,
+                                alignItems: 'center'
+                            }}>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
+                                        {formatCurrency(data.totalVolume || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        💰 Total Volume
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="secondary" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalTransactions || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        📈 Total Transactions
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
+                                        {volumeInstitutionData.length}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        🏦 Active Institutions
+                                    </Typography>
+                                </Box>
                             </Box>
                         </Box>
                         
@@ -285,44 +351,36 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                 const atmInstitutionData = Object.values(institutionTransactionData).slice(0, 8);
                 
                 return (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
-                        {/* Summary Stats */}
-                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
-                                <Typography variant="h5" color="success.main">
-                                    {formatNumber(data.totalSuccessCount || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Successful
-                                </Typography>
-                            </Box>
-                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
-                                <Typography variant="h5" color="error">
-                                    {formatNumber(data.totalFailedCount || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Failed
-                                </Typography>
-                            </Box>
-                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
-                                <Typography variant="h5" color="primary">
-                                    {successRate}%
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Success Rate
-                                </Typography>
-                            </Box>
-                        </Box>
-                        
-                        {/* Charts */}
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, mt: 2, width: '100%' }}>
+                        {/* Charts Section - Top */}
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'row',
+                            gap: 3, 
+                            width: '100%',
+                            minHeight: '400px'
+                        }}>
+                            <Box sx={{ 
+                                flex: '1 1 40%', 
+                                minWidth: '350px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
                                 <SimplePieChart 
                                     data={successFailurePieData} 
                                     title="Transaction Success Rate"
                                 />
                             </Box>
-                            <Box sx={{ flex: '1 1 400px', minWidth: '400px' }}>
+                            <Box sx={{ 
+                                flex: '1 1 60%', 
+                                minWidth: '500px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
                                 <SimpleBarChart 
                                     data={atmInstitutionData} 
                                     title="Successful Transactions by Institution" 
@@ -333,8 +391,89 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             </Box>
                         </Box>
                         
-                        <Typography variant="body2" color="info.main" align="center">
-                            💰 Total Amount: {formatCurrency(data.totalAmount || 0)}
+                        {/* Data Summary Section - Bottom */}
+                        <Box sx={{ 
+                            width: '100%',
+                            p: 3,
+                            backgroundColor: '#f8f9fa',
+                            borderRadius: 2,
+                            border: '1px solid #e0e0e0'
+                        }}>
+                            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
+                                🏧 ATM Transaction Analytics
+                            </Typography>
+                            <Box sx={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-around', 
+                                flexWrap: 'wrap', 
+                                gap: 4,
+                                alignItems: 'center'
+                            }}>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalSuccessCount || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ✅ Successful Transactions
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="error" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalFailedCount || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ❌ Failed Transactions
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
+                                        {successRate}%
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        📊 Success Rate
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="info.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatCurrency(data.totalAmount || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        💰 Total Amount
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+                        
+                        <Typography variant="body2" color="success.main" align="center">
+                            📈 {dataPoints} ATM transaction records processed
                         </Typography>
                     </Box>
                 );
@@ -358,30 +497,23 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                 ];
                 
                 return (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
-                        {/* Summary Stats */}
-                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
-                                <Typography variant="h4" color="primary">
-                                    {formatNumber(data.totalTerminals || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Total Terminals
-                                </Typography>
-                            </Box>
-                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
-                                <Typography variant="h4" color="success.main">
-                                    {formatNumber(data.activeTerminals || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Active Terminals
-                                </Typography>
-                            </Box>
-                        </Box>
-                        
-                        {/* Charts */}
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ flex: '1 1 400px', minWidth: '400px' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, mt: 2, width: '100%' }}>
+                        {/* Charts Section - Top */}
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'row',
+                            gap: 3, 
+                            width: '100%',
+                            minHeight: '400px'
+                        }}>
+                            <Box sx={{ 
+                                flex: '1 1 60%', 
+                                minWidth: '500px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
                                 <SimpleBarChart 
                                     data={atmTerminalData} 
                                     title="ATM Terminals by Institution" 
@@ -390,7 +522,14 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                     color="#1976d2"
                                 />
                             </Box>
-                            <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
+                            <Box sx={{ 
+                                flex: '1 1 40%', 
+                                minWidth: '350px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
                                 <SimplePieChart 
                                     data={atmStatusPieData} 
                                     title="Terminal Status Distribution"
@@ -398,35 +537,386 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             </Box>
                         </Box>
                         
+                        {/* Data Summary Section - Bottom */}
+                        <Box sx={{ 
+                            width: '100%',
+                            p: 3,
+                            backgroundColor: '#f8f9fa',
+                            borderRadius: 2,
+                            border: '1px solid #e0e0e0'
+                        }}>
+                            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
+                                🏧 ATM Terminal Analytics
+                            </Typography>
+                            <Box sx={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-around', 
+                                flexWrap: 'wrap', 
+                                gap: 4,
+                                alignItems: 'center'
+                            }}>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalTerminals || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        🏧 Total Terminals
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.activeTerminals || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ✅ Active Terminals
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="warning.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber((data.totalTerminals || 0) - (data.activeTerminals || 0))}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ⚠️ Inactive Terminals
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="info.main" sx={{ fontWeight: 'bold' }}>
+                                        {data.totalTerminals > 0 ? ((data.activeTerminals / data.totalTerminals) * 100).toFixed(1) : '0'}%
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        📊 Uptime Rate
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+                        
                         <Typography variant="body2" color="success.main" align="center">
-                            🏧 {dataPoints} terminal records from multiple institutions
+                            📈 {dataPoints} ATM terminal records processed
                         </Typography>
                     </Box>
                 );
 
             case 'pos-terminals':
+                // Prepare data for charts
+                const posTerminalsByInstitution = data.chartData ? 
+                    data.chartData.reduce((acc: any, item: any) => {
+                        const inst = item.institution || 'Unknown';
+                        if (!acc[inst]) acc[inst] = { institution: inst, totalCount: 0, activeCount: 0 };
+                        acc[inst].totalCount += item.totalCount || 0;
+                        acc[inst].activeCount += item.activeCount || 0;
+                        return acc;
+                    }, {}) : {};
+                
+                const posTerminalData = Object.values(posTerminalsByInstitution).slice(0, 8);
+                
+                const posStatusPieData = [
+                    { label: 'Active', value: data.activeTerminals || 0, color: '#2e7d32' },
+                    { label: 'Inactive', value: (data.totalTerminals || 0) - (data.activeTerminals || 0), color: '#d32f2f' }
+                ];
+                
                 return (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
-                                <Typography variant="h4" color="primary">
-                                    {formatNumber(data.totalTerminals || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Total POS Terminals
-                                </Typography>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, mt: 2, width: '100%' }}>
+                        {/* Charts Section - Top */}
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'row',
+                            gap: 3, 
+                            width: '100%',
+                            minHeight: '400px'
+                        }}>
+                            <Box sx={{ 
+                                flex: '1 1 60%', 
+                                minWidth: '500px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
+                                <SimpleBarChart 
+                                    data={posTerminalData} 
+                                    title="POS Terminals by Institution" 
+                                    xKey="institution" 
+                                    yKey="totalCount" 
+                                    color="#9c27b0"
+                                />
                             </Box>
-                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
-                                <Typography variant="h4" color="success.main">
-                                    {formatNumber(data.activeTerminals || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Active Terminals
-                                </Typography>
+                            <Box sx={{ 
+                                flex: '1 1 40%', 
+                                minWidth: '350px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
+                                <SimplePieChart 
+                                    data={posStatusPieData} 
+                                    title="POS Terminal Status Distribution"
+                                />
                             </Box>
                         </Box>
+                        
+                        {/* Data Summary Section - Bottom */}
+                        <Box sx={{ 
+                            width: '100%',
+                            p: 3,
+                            backgroundColor: '#f8f9fa',
+                            borderRadius: 2,
+                            border: '1px solid #e0e0e0'
+                        }}>
+                            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
+                                💳 POS Terminal Analytics
+                            </Typography>
+                            <Box sx={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-around', 
+                                flexWrap: 'wrap', 
+                                gap: 4,
+                                alignItems: 'center'
+                            }}>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalTerminals || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        💳 Total POS Terminals
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.activeTerminals || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ✅ Active Terminals
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="warning.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber((data.totalTerminals || 0) - (data.activeTerminals || 0))}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ⚠️ Inactive Terminals
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="info.main" sx={{ fontWeight: 'bold' }}>
+                                        {data.totalTerminals > 0 ? ((data.activeTerminals / data.totalTerminals) * 100).toFixed(1) : '0'}%
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        📊 Uptime Rate
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+                        
                         <Typography variant="body2" color="success.main" align="center">
-                            🏧 {dataPoints} terminal records from multiple institutions
+                            📈 {dataPoints} POS terminal records processed
+                        </Typography>
+                    </Box>
+                );
+
+            case 'pos-transactions':
+                const posSuccessRate = data.totalSuccessTransactions && data.totalFailedTransactions 
+                    ? ((data.totalSuccessTransactions / (data.totalSuccessTransactions + data.totalFailedTransactions)) * 100).toFixed(1)
+                    : '0';
+                
+                // Prepare data for charts
+                const posSuccessFailurePieData = [
+                    { label: 'Successful', value: data.totalSuccessTransactions || 0, color: '#2e7d32' },
+                    { label: 'Failed', value: data.totalFailedTransactions || 0, color: '#d32f2f' }
+                ];
+                
+                const posTransactionsByInstitution = data.chartData ? 
+                    data.chartData.reduce((acc: any, item: any) => {
+                        const inst = item.institution || 'Unknown';
+                        if (!acc[inst]) acc[inst] = { institution: inst, successCount: 0, failedCount: 0, totalAmount: 0 };
+                        acc[inst].successCount += item.successCount || 0;
+                        acc[inst].failedCount += item.failedCount || 0;
+                        acc[inst].totalAmount += item.totalAmount || 0;
+                        return acc;
+                    }, {}) : {};
+                
+                const posTransactionData = Object.values(posTransactionsByInstitution).slice(0, 8);
+                
+                return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, mt: 2, width: '100%' }}>
+                        {/* Charts Section - Top */}
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'row',
+                            gap: 3, 
+                            width: '100%',
+                            minHeight: '400px'
+                        }}>
+                            <Box sx={{ 
+                                flex: '1 1 40%', 
+                                minWidth: '350px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
+                                <SimplePieChart 
+                                    data={posSuccessFailurePieData} 
+                                    title="POS Transaction Success Rate"
+                                />
+                            </Box>
+                            <Box sx={{ 
+                                flex: '1 1 60%', 
+                                minWidth: '500px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
+                                <SimpleBarChart 
+                                    data={posTransactionData} 
+                                    title="POS Transaction Volume by Institution" 
+                                    xKey="institution" 
+                                    yKey="totalAmount" 
+                                    color="#9c27b0"
+                                />
+                            </Box>
+                        </Box>
+                        
+                        {/* Data Summary Section - Bottom */}
+                        <Box sx={{ 
+                            width: '100%',
+                            p: 3,
+                            backgroundColor: '#f8f9fa',
+                            borderRadius: 2,
+                            border: '1px solid #e0e0e0'
+                        }}>
+                            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
+                                💳 POS Transaction Analytics
+                            </Typography>
+                            <Box sx={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-around', 
+                                flexWrap: 'wrap', 
+                                gap: 4,
+                                alignItems: 'center'
+                            }}>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalSuccessTransactions || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ✅ Successful Transactions
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="error" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalFailedTransactions || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ❌ Failed Transactions
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
+                                        {posSuccessRate}%
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        📊 Success Rate
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="info.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatCurrency(data.totalAmount || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        💰 Total Amount
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+                        
+                        <Typography variant="body2" color="success.main" align="center">
+                            📈 {dataPoints} POS transaction records processed
                         </Typography>
                     </Box>
                 );
@@ -452,44 +942,36 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                 const cardInstitutionData = Object.values(cardsByInstitution).slice(0, 8);
                 
                 return (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
-                        {/* Summary Stats */}
-                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
-                                <Typography variant="h5" color="success.main">
-                                    {formatNumber(data.totalIssued || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Cards Issued
-                                </Typography>
-                            </Box>
-                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
-                                <Typography variant="h5" color="warning.main">
-                                    {formatNumber(data.totalExpired || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Cards Expired
-                                </Typography>
-                            </Box>
-                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
-                                <Typography variant="h5" color="error">
-                                    {formatNumber(data.totalCancelled || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Cards Cancelled
-                                </Typography>
-                            </Box>
-                        </Box>
-                        
-                        {/* Charts */}
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, mt: 2, width: '100%' }}>
+                        {/* Charts Section - Top */}
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'row',
+                            gap: 3, 
+                            width: '100%',
+                            minHeight: '400px'
+                        }}>
+                            <Box sx={{ 
+                                flex: '1 1 40%', 
+                                minWidth: '350px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
                                 <SimplePieChart 
                                     data={cardLifecyclePieData} 
                                     title="Card Lifecycle Distribution"
                                 />
                             </Box>
-                            <Box sx={{ flex: '1 1 400px', minWidth: '400px' }}>
+                            <Box sx={{ 
+                                flex: '1 1 60%', 
+                                minWidth: '500px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
                                 <SimpleBarChart 
                                     data={cardInstitutionData} 
                                     title="Cards Issued by Institution" 
@@ -500,8 +982,89 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             </Box>
                         </Box>
                         
+                        {/* Data Summary Section - Bottom */}
+                        <Box sx={{ 
+                            width: '100%',
+                            p: 3,
+                            backgroundColor: '#f8f9fa',
+                            borderRadius: 2,
+                            border: '1px solid #e0e0e0'
+                        }}>
+                            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
+                                💳 Card Lifecycle Analytics
+                            </Typography>
+                            <Box sx={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-around', 
+                                flexWrap: 'wrap', 
+                                gap: 4,
+                                alignItems: 'center'
+                            }}>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalIssued || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        🆕 Cards Issued
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="warning.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalExpired || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ⏰ Cards Expired
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="error" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalCancelled || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ❌ Cards Cancelled
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="info.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber((data.totalIssued || 0) - (data.totalExpired || 0) - (data.totalCancelled || 0))}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        ✅ Active Cards
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+                        
                         <Typography variant="body2" color="success.main" align="center">
-                            💳 {dataPoints} card lifecycle records processed
+                            📈 {dataPoints} card lifecycle records processed
                         </Typography>
                     </Box>
                 );
@@ -525,36 +1088,36 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                 const ecommerceInstitutionData = Object.values(ecommerceByInstitution).slice(0, 8);
                 
                 return (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 2 }}>
-                        {/* Summary Stats */}
-                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
-                                <Typography variant="h4" color="primary">
-                                    {formatNumber(data.totalEnabledCards || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    E-commerce Enabled
-                                </Typography>
-                            </Box>
-                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
-                                <Typography variant="h4" color="success.main">
-                                    {formatNumber(data.totalTransactions || 0)}
-                                </Typography>
-                                <Typography variant="caption" color="textSecondary">
-                                    Online Transactions
-                                </Typography>
-                            </Box>
-                        </Box>
-                        
-                        {/* Charts */}
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                            <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, mt: 2, width: '100%' }}>
+                        {/* Charts Section - Top */}
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'row',
+                            gap: 3, 
+                            width: '100%',
+                            minHeight: '400px'
+                        }}>
+                            <Box sx={{ 
+                                flex: '1 1 40%', 
+                                minWidth: '350px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
                                 <SimplePieChart 
                                     data={ecommerceCardsPieData} 
                                     title="E-commerce Card Distribution"
                                 />
                             </Box>
-                            <Box sx={{ flex: '1 1 400px', minWidth: '400px' }}>
+                            <Box sx={{ 
+                                flex: '1 1 60%', 
+                                minWidth: '500px',
+                                p: 3,
+                                backgroundColor: '#fafafa',
+                                borderRadius: 2,
+                                border: '1px solid #e0e0e0'
+                            }}>
                                 <SimpleBarChart 
                                     data={ecommerceInstitutionData} 
                                     title="Transaction Volume by Institution" 
@@ -565,8 +1128,89 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             </Box>
                         </Box>
                         
-                        <Typography variant="body2" color="info.main" align="center">
-                            💰 Total Volume: {formatCurrency(data.totalVolume || 0)}
+                        {/* Data Summary Section - Bottom */}
+                        <Box sx={{ 
+                            width: '100%',
+                            p: 3,
+                            backgroundColor: '#f8f9fa',
+                            borderRadius: 2,
+                            border: '1px solid #e0e0e0'
+                        }}>
+                            <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
+                                🛋 E-commerce Activity Analytics
+                            </Typography>
+                            <Box sx={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-around', 
+                                flexWrap: 'wrap', 
+                                gap: 4,
+                                alignItems: 'center'
+                            }}>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalEnabledCards || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        🛋 E-commerce Enabled Cards
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatNumber(data.totalTransactions || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        💳 Online Transactions
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="info.main" sx={{ fontWeight: 'bold' }}>
+                                        {formatCurrency(data.totalVolume || 0)}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        💰 Total Volume
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ 
+                                    textAlign: 'center', 
+                                    minWidth: '200px',
+                                    p: 2,
+                                    backgroundColor: 'white',
+                                    borderRadius: 2,
+                                    boxShadow: 1
+                                }}>
+                                    <Typography variant="h3" color="secondary" sx={{ fontWeight: 'bold' }}>
+                                        {data.totalTransactions > 0 ? (data.totalVolume / data.totalTransactions).toFixed(2) : '0'}
+                                    </Typography>
+                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
+                                        📊 Avg Transaction (LYD)
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+                        
+                        <Typography variant="body2" color="success.main" align="center">
+                            📈 {dataPoints} e-commerce activity records processed
                         </Typography>
                     </Box>
                 );
@@ -632,17 +1276,42 @@ interface DateRange {
     endDate: string;
 }
 
+interface FilterOptions {
+    selectedBank: string;
+    transactionType?: string;
+    terminalStatus?: string;
+    cardStatus?: string;
+}
+
 const BusinessIntelligence: React.FC = () => {
     const [selectedReportType, setSelectedReportType] = useState<string>('transaction-volume');
     const [dateRange, setDateRange] = useState<DateRange>({
         startDate: '',
         endDate: ''
     });
+    const [filters, setFilters] = useState<FilterOptions>({
+        selectedBank: '',
+        transactionType: '',
+        terminalStatus: '',
+        cardStatus: ''
+    });
     const [loading, setLoading] = useState<boolean>(false);
-    const [processing, setProcessing] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [summary, setSummary] = useState<ReportSummary | null>(null);
     const [chartData, setChartData] = useState<ChartData | null>(null);
+    
+    // Available banks/institutions for filtering
+    const availableBanks = [
+        'All Banks',
+        'Central Bank of Libya',
+        'National Commercial Bank',
+        'Wahda Bank',
+        'Sahara Bank',
+        'Republic Bank',
+        'Mediterranean Bank',
+        'Al Ejmaa Al Arabi Bank',
+        'Libyan Foreign Bank'
+    ];
 
     useEffect(() => {
         fetchReportSummary();
@@ -652,7 +1321,7 @@ const BusinessIntelligence: React.FC = () => {
         if (selectedReportType) {
             fetchChartData();
         }
-    }, [selectedReportType, dateRange]);
+    }, [selectedReportType, dateRange, filters]);
 
     const fetchReportSummary = async () => {
         try {
@@ -729,7 +1398,21 @@ const BusinessIntelligence: React.FC = () => {
                 params.append('endDate', formattedEndDate);
             }
             
-            console.log('Final URL params:', params.toString());
+            // Add filter parameters
+            if (filters.selectedBank && filters.selectedBank !== 'All Banks') {
+                params.append('institution', filters.selectedBank);
+            }
+            if (filters.transactionType) {
+                params.append('transactionType', filters.transactionType);
+            }
+            if (filters.terminalStatus) {
+                params.append('status', filters.terminalStatus);
+            }
+            if (filters.cardStatus) {
+                params.append('cardStatus', filters.cardStatus);
+            }
+            
+            console.log('Final URL params with filters:', params.toString());
             
             const response = await fetch(`${endpoint}?${params}`, {
                 headers: {
@@ -758,73 +1441,13 @@ const BusinessIntelligence: React.FC = () => {
         }
     };
 
-    const processReports = async () => {
-        setProcessing(true);
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('/api/bi/process-reports?directory=sample-data/reports', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            if (response.ok) {
-                // Refresh summary after processing
-                await fetchReportSummary();
-                alert('Reports processed successfully!');
-            } else {
-                alert('Error processing reports. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error processing reports:', error);
-            alert('Error processing reports. Please try again.');
-        } finally {
-            setProcessing(false);
-        }
-    };
-
     const renderChart = () => {
         if (!chartData) return null;
 
+        // Use the enhanced stacked layout for all report types
         return (
-            <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-                <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                    <Card>
-                        <CardHeader title="Chart Visualization" />
-                        <CardContent>
-                            <EnhancedChart title={selectedReportType} data={chartData} />
-                        </CardContent>
-                    </Card>
-                </Box>
-                <Box sx={{ flex: '1 1 300px', minWidth: '300px' }}>
-                    <Card>
-                        <CardHeader title="Data Summary" />
-                        <CardContent>
-                            <Typography variant="body2">
-                                Report Type: {selectedReportType.replace('-', ' ').toUpperCase()}
-                                <br />
-                                Data Points: {(() => {
-                                    if (chartData?.chartData && Array.isArray(chartData.chartData)) {
-                                        return chartData.chartData.length;
-                                    } else if (chartData?.datasets?.[0]?.data) {
-                                        return chartData.datasets[0].data.length;
-                                    } else if (Array.isArray(chartData)) {
-                                        return chartData.length;
-                                    }
-                                    return 0;
-                                })()}
-                                <br />
-                                Date Range: {dateRange.startDate || 'All'} - {dateRange.endDate || 'All'}
-                                <br />
-                                Status: {chartData ? ((() => {
-                                    const count = (chartData as any)?.chartData?.length || (chartData as any)?.datasets?.[0]?.data?.length || (Array.isArray(chartData) ? chartData.length : 0);
-                                    return count > 0 ? '✅ Data Loaded' : '⚠️ No Data';
-                                })()) : '⏳ Loading...'}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Box>
+            <Box sx={{ width: '100%' }}>
+                <EnhancedChart title={selectedReportType} data={chartData} />
             </Box>
         );
     };
@@ -882,35 +1505,98 @@ const BusinessIntelligence: React.FC = () => {
                         />
                     </Box>
                     
+                    {/* Bank/Institution Filter */}
                     <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
-                        <Button 
-                            variant="contained" 
-                            color="secondary" 
-                            onClick={processReports}
-                            disabled={processing}
-                            fullWidth
-                            sx={{ 
-                                height: '56px',
-                                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-                                boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-                            }}
-                        >
-                            {processing ? (
-                                <>
-                                    <CircularProgress size={20} sx={{ mr: 1, color: 'white' }} />
-                                    Processing CSV Reports...
-                                </>
-                            ) : (
-                                <>
-                                    📊 PROCESS CSV REPORTS
-                                </>
-                            )}
-                        </Button>
-                        <Typography variant="caption" display="block" sx={{ mt: 0.5, textAlign: 'center', color: 'text.secondary' }}>
-                            Import CSV files from sample-data/reports directory
-                        </Typography>
+                        <FormControl fullWidth>
+                            <InputLabel>Bank/Institution</InputLabel>
+                            <Select
+                                value={filters.selectedBank}
+                                onChange={(e) => setFilters(prev => ({ ...prev, selectedBank: e.target.value }))}
+                                label="Bank/Institution"
+                            >
+                                {availableBanks.map((bank) => (
+                                    <MenuItem key={bank} value={bank}>{bank}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </Box>
+                    
+                    {/* Report-Specific Filters */}
+                    {selectedReportType === 'atm-transactions' || selectedReportType === 'pos-transactions' ? (
+                        <Box sx={{ flex: '1 1 150px', minWidth: '150px' }}>
+                            <FormControl fullWidth>
+                                <InputLabel>Transaction Type</InputLabel>
+                                <Select
+                                    value={filters.transactionType || ''}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, transactionType: e.target.value }))}
+                                    label="Transaction Type"
+                                >
+                                    <MenuItem value="">All Types</MenuItem>
+                                    <MenuItem value="successful">Successful Only</MenuItem>
+                                    <MenuItem value="failed">Failed Only</MenuItem>
+                                    <MenuItem value="withdrawal">Withdrawals</MenuItem>
+                                    <MenuItem value="deposit">Deposits</MenuItem>
+                                    <MenuItem value="balance">Balance Inquiry</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    ) : null}
+                    
+                    {selectedReportType === 'atm-terminals' || selectedReportType === 'pos-terminals' ? (
+                        <Box sx={{ flex: '1 1 150px', minWidth: '150px' }}>
+                            <FormControl fullWidth>
+                                <InputLabel>Terminal Status</InputLabel>
+                                <Select
+                                    value={filters.terminalStatus || ''}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, terminalStatus: e.target.value }))}
+                                    label="Terminal Status"
+                                >
+                                    <MenuItem value="">All Status</MenuItem>
+                                    <MenuItem value="active">Active Only</MenuItem>
+                                    <MenuItem value="inactive">Inactive Only</MenuItem>
+                                    <MenuItem value="maintenance">Under Maintenance</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    ) : null}
+                    
+                    {selectedReportType === 'card-lifecycle' ? (
+                        <Box sx={{ flex: '1 1 150px', minWidth: '150px' }}>
+                            <FormControl fullWidth>
+                                <InputLabel>Card Status</InputLabel>
+                                <Select
+                                    value={filters.cardStatus || ''}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, cardStatus: e.target.value }))}
+                                    label="Card Status"
+                                >
+                                    <MenuItem value="">All Status</MenuItem>
+                                    <MenuItem value="issued">Issued</MenuItem>
+                                    <MenuItem value="active">Active</MenuItem>
+                                    <MenuItem value="expired">Expired</MenuItem>
+                                    <MenuItem value="cancelled">Cancelled</MenuItem>
+                                    <MenuItem value="blocked">Blocked</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    ) : null}
+                    
 
+                    
+                    {/* Clear Filters Button */}
+                    <Box sx={{ flex: '0 0 auto' }}>
+                        <Button 
+                            variant="outlined" 
+                            onClick={() => setFilters({
+                                selectedBank: '',
+                                transactionType: '',
+                                terminalStatus: '',
+                                cardStatus: ''
+                            })}
+                            sx={{ height: '56px' }}
+                        >
+                            🗑️ Clear Filters
+                        </Button>
+                    </Box>
 
                 </Box>
             </Paper>

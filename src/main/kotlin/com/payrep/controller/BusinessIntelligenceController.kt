@@ -29,12 +29,13 @@ class BusinessIntelligenceController(
     @GetMapping("/transaction-volume")
     fun getTransactionVolumeData(
         @RequestParam("startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
-        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?
+        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?,
+        @RequestParam("institution", required = false) institution: String?
     ): ResponseEntity<Map<String, Any>> {
         val start = startDate ?: LocalDate.now().minusMonths(1)
         val end = endDate ?: LocalDate.now()
         
-        val chartData = reportService.getTransactionVolumeChartData(start, end)
+        val chartData = reportService.getTransactionVolumeChartData(start, end, institution)
         return ResponseEntity.ok(chartData)
     }
     
@@ -42,12 +43,13 @@ class BusinessIntelligenceController(
     @PreAuthorize("hasRole('ADMIN')")
     fun getATMTransactionAnalytics(
         @RequestParam("startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
-        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?
+        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?,
+        @RequestParam("institution", required = false) institution: String?
     ): ResponseEntity<Map<String, Any>> {
         val start = startDate ?: LocalDate.now().minusMonths(1)
         val end = endDate ?: LocalDate.now()
         
-        val data = reportService.getATMTransactionAnalytics(start, end)
+        val data = reportService.getATMTransactionAnalytics(start, end, institution)
         return ResponseEntity.ok(data)
     }
     
@@ -55,12 +57,13 @@ class BusinessIntelligenceController(
     @PreAuthorize("hasRole('ADMIN')")
     fun getPOSTerminalAnalytics(
         @RequestParam("startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
-        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?
+        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?,
+        @RequestParam("institution", required = false) institution: String?
     ): ResponseEntity<Map<String, Any>> {
         val start = startDate ?: LocalDate.now().minusMonths(1)
         val end = endDate ?: LocalDate.now()
         
-        val data = reportService.getPOSTerminalAnalytics(start, end)
+        val data = reportService.getPOSTerminalAnalytics(start, end, institution)
         return ResponseEntity.ok(data)
     }
     
@@ -68,12 +71,13 @@ class BusinessIntelligenceController(
     @PreAuthorize("hasRole('ADMIN')")
     fun getATMTerminalAnalytics(
         @RequestParam("startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
-        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?
+        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?,
+        @RequestParam("institution", required = false) institution: String?
     ): ResponseEntity<Map<String, Any>> {
         val start = startDate ?: LocalDate.now().minusMonths(1)
         val end = endDate ?: LocalDate.now()
         
-        val data = reportService.getATMTerminalAnalytics(start, end)
+        val data = reportService.getATMTerminalAnalytics(start, end, institution)
         return ResponseEntity.ok(data)
     }
     
@@ -81,12 +85,13 @@ class BusinessIntelligenceController(
     @PreAuthorize("hasRole('ADMIN')")
     fun getPOSTransactionAnalytics(
         @RequestParam("startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
-        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?
+        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?,
+        @RequestParam("institution", required = false) institution: String?
     ): ResponseEntity<Map<String, Any>> {
         val start = startDate ?: LocalDate.now().minusMonths(1)
         val end = endDate ?: LocalDate.now()
         
-        val data = reportService.getPOSTransactionAnalytics(start, end)
+        val data = reportService.getPOSTransactionAnalytics(start, end, institution)
         return ResponseEntity.ok(data)
     }
     
@@ -94,12 +99,13 @@ class BusinessIntelligenceController(
     @PreAuthorize("hasRole('ADMIN')")
     fun getCardLifecycleAnalytics(
         @RequestParam("startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
-        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?
+        @RequestParam("endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?,
+        @RequestParam("institution", required = false) institution: String?
     ): ResponseEntity<Map<String, Any>> {
         val start = startDate ?: LocalDate.now().minusMonths(1)
         val end = endDate ?: LocalDate.now()
         
-        val data = reportService.getCardLifecycleAnalytics(start, end)
+        val data = reportService.getCardLifecycleAnalytics(start, end, institution)
         return ResponseEntity.ok(data)
     }
     
