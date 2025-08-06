@@ -1,6 +1,6 @@
 package com.payrep.controller
 
-import com.payrep.service.ReportService
+import com.payrep.service.ReportServiceSimple
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -11,7 +11,7 @@ import java.time.LocalDate
 @RequestMapping("/api/bi")
 @PreAuthorize("hasRole('ADMIN')")
 class BusinessIntelligenceController(
-    private val reportService: ReportService
+    private val reportService: ReportServiceSimple
 ) {
     
     @GetMapping("/process-reports")

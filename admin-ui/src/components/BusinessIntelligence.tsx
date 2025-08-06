@@ -7,26 +7,290 @@ import {
 } from '@mui/material';
 import './BusinessIntelligence.css';
 
-// Mock chart component since we can't install chart.js dependencies
-const MockChart: React.FC<{ title: string; data: any }> = ({ title, data }) => (
-    <Box 
-        sx={{ 
-            height: 300, 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            backgroundColor: '#f5f5f5',
-            border: '1px solid #ddd',
-            borderRadius: 1
-        }}
-    >
-        <Typography variant="body1" color="textSecondary">
-            {title} Chart Placeholder
-            <br />
-            <small>Data points: {data?.datasets?.[0]?.data?.length || 0}</small>
-        </Typography>
-    </Box>
-);
+// Enhanced chart component with proper data visualization
+const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) => {
+    // Handle different data formats from backend
+    let dataPoints = 0;
+    if (data?.chartData && Array.isArray(data.chartData)) {
+        dataPoints = data.chartData.length;
+    } else if (data?.datasets?.[0]?.data) {
+        dataPoints = data.datasets[0].data.length;
+    } else if (Array.isArray(data)) {
+        dataPoints = data.length;
+    }
+
+    const formatNumber = (num: number) => {
+        if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num.toLocaleString();
+    };
+
+    const formatCurrency = (num: number) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        }).format(num);
+    };
+
+    const renderReportSpecificData = () => {
+        if (!data || dataPoints === 0) {
+            return (
+                <Typography variant="body2" color="warning.main" sx={{ mt: 2 }}>
+                    ⚠️ No data available for selected date range
+                </Typography>
+            );
+        }
+
+        switch (title) {
+            case 'transaction-volume':
+                return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
+                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
+                                <Typography variant="h4" color="primary">
+                                    {formatCurrency(data.totalVolume || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Total Volume
+                                </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
+                                <Typography variant="h4" color="secondary">
+                                    {formatNumber(data.totalTransactions || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Total Transactions
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Typography variant="body2" color="success.main" align="center">
+                            📈 {dataPoints} transaction records processed
+                        </Typography>
+                    </Box>
+                );
+
+            case 'atm-transactions':
+                const successRate = data.totalSuccessCount && data.totalFailedCount 
+                    ? ((data.totalSuccessCount / (data.totalSuccessCount + data.totalFailedCount)) * 100).toFixed(1)
+                    : '0';
+                return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
+                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
+                                <Typography variant="h5" color="success.main">
+                                    {formatNumber(data.totalSuccessCount || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Successful
+                                </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
+                                <Typography variant="h5" color="error">
+                                    {formatNumber(data.totalFailedCount || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Failed
+                                </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
+                                <Typography variant="h5" color="primary">
+                                    {successRate}%
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Success Rate
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Typography variant="body2" color="info.main" align="center">
+                            💰 Total Amount: {formatCurrency(data.totalAmount || 0)}
+                        </Typography>
+                    </Box>
+                );
+
+            case 'atm-terminals':
+                return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
+                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
+                                <Typography variant="h4" color="primary">
+                                    {formatNumber(data.totalTerminals || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Total Terminals
+                                </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
+                                <Typography variant="h4" color="success.main">
+                                    {formatNumber(data.activeTerminals || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Active Terminals
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Typography variant="body2" color="success.main" align="center">
+                            🏧 {dataPoints} terminal records from multiple institutions
+                        </Typography>
+                    </Box>
+                );
+
+            case 'pos-terminals':
+                return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
+                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
+                                <Typography variant="h4" color="primary">
+                                    {formatNumber(data.totalTerminals || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Total POS Terminals
+                                </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
+                                <Typography variant="h4" color="success.main">
+                                    {formatNumber(data.activeTerminals || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Active Terminals
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Typography variant="body2" color="success.main" align="center">
+                            💳 {dataPoints} POS terminal records processed
+                        </Typography>
+                    </Box>
+                );
+
+            case 'pos-transactions':
+                const posSuccessRate = data.totalSuccessTransactions && data.totalFailedTransactions 
+                    ? ((data.totalSuccessTransactions / (data.totalSuccessTransactions + data.totalFailedTransactions)) * 100).toFixed(1)
+                    : '0';
+                return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
+                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
+                                <Typography variant="h5" color="success.main">
+                                    {formatNumber(data.totalSuccessTransactions || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Successful
+                                </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
+                                <Typography variant="h5" color="error">
+                                    {formatNumber(data.totalFailedTransactions || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Failed
+                                </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
+                                <Typography variant="h5" color="primary">
+                                    {posSuccessRate}%
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Success Rate
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Typography variant="body2" color="info.main" align="center">
+                            💰 Total Amount: {formatCurrency(data.totalAmount || 0)}
+                        </Typography>
+                    </Box>
+                );
+
+            case 'card-lifecycle':
+                return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
+                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
+                                <Typography variant="h5" color="success.main">
+                                    {formatNumber(data.totalIssued || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Cards Issued
+                                </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
+                                <Typography variant="h5" color="warning.main">
+                                    {formatNumber(data.totalExpired || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Cards Expired
+                                </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'center', minWidth: '100px' }}>
+                                <Typography variant="h5" color="error">
+                                    {formatNumber(data.totalCancelled || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Cards Cancelled
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Typography variant="body2" color="success.main" align="center">
+                            💳 {dataPoints} card lifecycle records processed
+                        </Typography>
+                    </Box>
+                );
+
+            case 'ecommerce-activity':
+                return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
+                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
+                                <Typography variant="h4" color="primary">
+                                    {formatNumber(data.totalEnabledCards || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    E-commerce Enabled
+                                </Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'center', minWidth: '120px' }}>
+                                <Typography variant="h4" color="success.main">
+                                    {formatNumber(data.totalTransactions || 0)}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                    Online Transactions
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Typography variant="body2" color="info.main" align="center">
+                            💰 Total Volume: {formatCurrency(data.totalVolume || 0)}
+                        </Typography>
+                    </Box>
+                );
+
+            default:
+                return (
+                    <Typography variant="body2" color="success.main" align="center">
+                        📊 {dataPoints} data points loaded
+                    </Typography>
+                );
+        }
+    };
+    
+    return (
+        <Box 
+            sx={{ 
+                minHeight: 300, 
+                display: 'flex', 
+                flexDirection: 'column',
+                alignItems: 'center', 
+                justifyContent: 'center',
+                backgroundColor: '#f8f9fa',
+                border: '2px solid #e9ecef',
+                borderRadius: 2,
+                padding: 3
+            }}
+        >
+            <Typography variant="h5" color="primary" gutterBottom sx={{ fontWeight: 'bold' }}>
+                📈 {title.replace('-', ' ').toUpperCase()} ANALYTICS
+            </Typography>
+            {renderReportSpecificData()}
+        </Box>
+    );
+};
 
 interface ReportSummary {
     reportTypes: string[];
@@ -37,14 +301,20 @@ interface ReportSummary {
 }
 
 interface ChartData {
-    labels: string[];
-    datasets: {
+    labels?: string[];
+    datasets?: {
         label: string;
         data: number[];
         backgroundColor?: string[];
         borderColor?: string[];
         borderWidth?: number;
     }[];
+    // Backend response format
+    chartData?: any[];
+    summary?: any;
+    totalVolume?: number;
+    totalTransactions?: number;
+    [key: string]: any; // Allow any additional properties from backend
 }
 
 interface DateRange {
@@ -127,12 +397,29 @@ const BusinessIntelligence: React.FC = () => {
             }
             
             const params = new URLSearchParams();
+            
+            console.log('Date Range State:', dateRange);
+            
+            // Ensure proper date format (YYYY-MM-DD)
+            const formatDate = (dateStr: string) => {
+                if (!dateStr) return '';
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return dateStr; // Return original if invalid
+                return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+            };
+            
             if (dateRange.startDate) {
-                params.append('startDate', dateRange.startDate);
+                const formattedStartDate = formatDate(dateRange.startDate);
+                console.log('Original startDate:', dateRange.startDate, 'Formatted:', formattedStartDate);
+                params.append('startDate', formattedStartDate);
             }
             if (dateRange.endDate) {
-                params.append('endDate', dateRange.endDate);
+                const formattedEndDate = formatDate(dateRange.endDate);
+                console.log('Original endDate:', dateRange.endDate, 'Formatted:', formattedEndDate);
+                params.append('endDate', formattedEndDate);
             }
+            
+            console.log('Final URL params:', params.toString());
             
             const response = await fetch(`${endpoint}?${params}`, {
                 headers: {
@@ -141,9 +428,17 @@ const BusinessIntelligence: React.FC = () => {
                 }
             });
             
+            console.log('API Response Status:', response.status);
+            console.log('API Response Headers:', response.headers);
+            
             if (response.ok) {
                 const data = await response.json();
+                console.log('API Response Data:', data);
                 setChartData(data);
+            } else {
+                const errorText = await response.text();
+                console.error('API Error Response:', errorText);
+                setError(`API Error: ${response.status} - ${errorText}`);
             }
         } catch (error) {
             console.error('Error fetching chart data:', error);
@@ -188,7 +483,7 @@ const BusinessIntelligence: React.FC = () => {
                     <Card>
                         <CardHeader title="Chart Visualization" />
                         <CardContent>
-                            <MockChart title={selectedReportType} data={chartData} />
+                            <EnhancedChart title={selectedReportType} data={chartData} />
                         </CardContent>
                     </Card>
                 </Box>
@@ -197,11 +492,25 @@ const BusinessIntelligence: React.FC = () => {
                         <CardHeader title="Data Summary" />
                         <CardContent>
                             <Typography variant="body2">
-                                Report Type: {selectedReportType}
+                                Report Type: {selectedReportType.replace('-', ' ').toUpperCase()}
                                 <br />
-                                Data Points: {chartData?.datasets?.[0]?.data?.length || 0}
+                                Data Points: {(() => {
+                                    if (chartData?.chartData && Array.isArray(chartData.chartData)) {
+                                        return chartData.chartData.length;
+                                    } else if (chartData?.datasets?.[0]?.data) {
+                                        return chartData.datasets[0].data.length;
+                                    } else if (Array.isArray(chartData)) {
+                                        return chartData.length;
+                                    }
+                                    return 0;
+                                })()}
                                 <br />
                                 Date Range: {dateRange.startDate || 'All'} - {dateRange.endDate || 'All'}
+                                <br />
+                                Status: {chartData ? ((() => {
+                                    const count = (chartData as any)?.chartData?.length || (chartData as any)?.datasets?.[0]?.data?.length || (Array.isArray(chartData) ? chartData.length : 0);
+                                    return count > 0 ? '✅ Data Loaded' : '⚠️ No Data';
+                                })()) : '⏳ Loading...'}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -263,16 +572,36 @@ const BusinessIntelligence: React.FC = () => {
                         />
                     </Box>
                     
-                    <Box sx={{ flex: '1 1 150px', minWidth: '150px' }}>
+                    <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
                         <Button 
                             variant="contained" 
-                            fullWidth
+                            color="secondary" 
                             onClick={processReports}
                             disabled={processing}
+                            fullWidth
+                            sx={{ 
+                                height: '56px',
+                                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                                boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+                            }}
                         >
-                            {processing ? <CircularProgress size={24} /> : 'Process Reports'}
+                            {processing ? (
+                                <>
+                                    <CircularProgress size={20} sx={{ mr: 1, color: 'white' }} />
+                                    Processing CSV Reports...
+                                </>
+                            ) : (
+                                <>
+                                    📊 PROCESS CSV REPORTS
+                                </>
+                            )}
                         </Button>
+                        <Typography variant="caption" display="block" sx={{ mt: 0.5, textAlign: 'center', color: 'text.secondary' }}>
+                            Import CSV files from sample-data/reports directory
+                        </Typography>
                     </Box>
+
+
                 </Box>
             </Paper>
 
