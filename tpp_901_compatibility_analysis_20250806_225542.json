@@ -1,0 +1,606 @@
+{
+  "timestamp": "2025-08-06T22:55:42.010184",
+  "tpp_code": "901",
+  "tpp_name": "Tadawul TPP",
+  "analysis_results": {
+    "ecommerce_card_activity": {
+      "tpp_901_structure": {
+        "headers": [
+          "institution_id",
+          "institution_name",
+          "card_product_code",
+          "ecommerce_enabled_cards",
+          "ecommerce_activity_cards",
+          "report_date"
+        ],
+        "header_count": 6,
+        "sample_rows": [
+          [
+            "000001",
+            "ATIB",
+            "Debit",
+            "21065",
+            "1",
+            "2025-07-18"
+          ],
+          [
+            "000003",
+            "SAHARA BANK",
+            "Debit",
+            "127",
+            "0",
+            "2025-07-18"
+          ],
+          [
+            "000004",
+            "NORTH AFRICA BANK",
+            "Debit",
+            "493",
+            "0",
+            "2025-07-18"
+          ],
+          [
+            "000006",
+            "NCB BANK",
+            "Debit",
+            "160219",
+            "0",
+            "2025-07-18"
+          ],
+          [
+            "000009",
+            "BCD BANK",
+            "Debit",
+            "22474",
+            "0",
+            "2025-07-18"
+          ]
+        ],
+        "data_row_count": 5
+      },
+      "template_structure": {
+        "headers": [
+          "institution_id",
+          "institution_name",
+          "card_product_code",
+          "ecommerce_enabled_cards",
+          "ecommerce_activity_cards",
+          "report_date"
+        ],
+        "header_count": 6,
+        "sample_rows": [
+          [
+            "025",
+            "LIB",
+            "DEBIT_STD",
+            "40",
+            "40",
+            "2025-06-30"
+          ]
+        ],
+        "data_row_count": 1
+      },
+      "compatibility": {
+        "tpp_901_headers": [
+          "ecommerce_enabled_cards",
+          "institution_id",
+          "report_date",
+          "institution_name",
+          "card_product_code",
+          "ecommerce_activity_cards"
+        ],
+        "template_headers": [
+          "ecommerce_enabled_cards",
+          "institution_id",
+          "report_date",
+          "institution_name",
+          "card_product_code",
+          "ecommerce_activity_cards"
+        ],
+        "matching_headers": [
+          "report_date",
+          "institution_id",
+          "ecommerce_enabled_cards",
+          "institution_name",
+          "card_product_code",
+          "ecommerce_activity_cards"
+        ],
+        "missing_in_tpp_901": [],
+        "extra_in_tpp_901": [],
+        "compatibility_score": 1.0,
+        "header_count_match": true
+      },
+      "data_analysis": {
+        "tpp_901_sample_data": [
+          [
+            "000001",
+            "ATIB",
+            "Debit",
+            "21065",
+            "1",
+            "2025-07-18"
+          ],
+          [
+            "000003",
+            "SAHARA BANK",
+            "Debit",
+            "127",
+            "0",
+            "2025-07-18"
+          ],
+          [
+            "000004",
+            "NORTH AFRICA BANK",
+            "Debit",
+            "493",
+            "0",
+            "2025-07-18"
+          ],
+          [
+            "000006",
+            "NCB BANK",
+            "Debit",
+            "160219",
+            "0",
+            "2025-07-18"
+          ],
+          [
+            "000009",
+            "BCD BANK",
+            "Debit",
+            "22474",
+            "0",
+            "2025-07-18"
+          ]
+        ],
+        "template_sample_data": [
+          [
+            "025",
+            "LIB",
+            "DEBIT_STD",
+            "40",
+            "40",
+            "2025-06-30"
+          ]
+        ],
+        "data_format_issues": [
+          {
+            "column": "report_date",
+            "sample_value": "2025-07-18",
+            "issue": "Date format should be validated"
+          }
+        ]
+      }
+    },
+    "pos_terminal_data": {
+      "tpp_901_structure": {
+        "headers": [
+          "institution_id",
+          "institution_name",
+          "mcc_code",
+          "mcc_description",
+          "terminals_issued_count",
+          "terminals_reissued_count",
+          "terminals_decom_count",
+          "terminals_activity_count",
+          "terminals_total_count",
+          "report_date"
+        ],
+        "header_count": 10,
+        "sample_rows": [
+          [
+            "2",
+            "ATIB",
+            "4722",
+            "Travel Agencies and Tour Operators",
+            "0",
+            "0",
+            "0",
+            "1",
+            "35",
+            "2025-07-18"
+          ],
+          [
+            "2",
+            "ATIB",
+            "4900",
+            "Utilities - Electric, Gas, Sanitary, Water",
+            "0",
+            "0",
+            "0",
+            "0",
+            "3",
+            "2025-07-18"
+          ],
+          [
+            "2",
+            "ATIB",
+            "5013",
+            "Motor Vehicle Supplies and New Parts",
+            "0",
+            "0",
+            "0",
+            "19",
+            "363",
+            "2025-07-18"
+          ],
+          [
+            "2",
+            "ATIB",
+            "5065",
+            "Electrical Parts and Equipment",
+            "0",
+            "0",
+            "0",
+            "1",
+            "91",
+            "2025-07-18"
+          ],
+          [
+            "2",
+            "ATIB",
+            "5211",
+            "Building Materials, Lumber Stores",
+            "0",
+            "0",
+            "0",
+            "13",
+            "257",
+            "2025-07-18"
+          ]
+        ],
+        "data_row_count": 5
+      },
+      "template_structure": {
+        "headers": [
+          "institution_id",
+          "institution_name",
+          "mcc_code",
+          "mcc_description",
+          "terminals_issued_count",
+          "terminals_delivered_count",
+          "terminals_reissued_count",
+          "terminals_decom_count",
+          "terminals_active_count",
+          "terminals_activity_count",
+          "terminals_total_count",
+          "report_date"
+        ],
+        "header_count": 12,
+        "sample_rows": [
+          [
+            "011",
+            "ABC Bank",
+            "5812",
+            "Restaurants",
+            "3",
+            "5",
+            "1",
+            "0",
+            "230",
+            "240",
+            "240",
+            "2025-06-30"
+          ]
+        ],
+        "data_row_count": 1
+      },
+      "compatibility": {
+        "tpp_901_headers": [
+          "terminals_total_count",
+          "institution_id",
+          "report_date",
+          "mcc_code",
+          "terminals_issued_count",
+          "institution_name",
+          "terminals_reissued_count",
+          "terminals_decom_count",
+          "terminals_activity_count",
+          "mcc_description"
+        ],
+        "template_headers": [
+          "terminals_total_count",
+          "terminals_active_count",
+          "institution_id",
+          "report_date",
+          "mcc_code",
+          "terminals_issued_count",
+          "institution_name",
+          "terminals_delivered_count",
+          "terminals_reissued_count",
+          "terminals_decom_count",
+          "terminals_activity_count",
+          "mcc_description"
+        ],
+        "matching_headers": [
+          "terminals_total_count",
+          "report_date",
+          "institution_id",
+          "mcc_code",
+          "terminals_issued_count",
+          "institution_name",
+          "terminals_reissued_count",
+          "terminals_decom_count",
+          "terminals_activity_count",
+          "mcc_description"
+        ],
+        "missing_in_tpp_901": [
+          "terminals_delivered_count",
+          "terminals_active_count"
+        ],
+        "extra_in_tpp_901": [],
+        "compatibility_score": 0.8333333333333334,
+        "header_count_match": false
+      },
+      "data_analysis": {
+        "tpp_901_sample_data": [
+          [
+            "2",
+            "ATIB",
+            "4722",
+            "Travel Agencies and Tour Operators",
+            "0",
+            "0",
+            "0",
+            "1",
+            "35",
+            "2025-07-18"
+          ],
+          [
+            "2",
+            "ATIB",
+            "4900",
+            "Utilities - Electric, Gas, Sanitary, Water",
+            "0",
+            "0",
+            "0",
+            "0",
+            "3",
+            "2025-07-18"
+          ],
+          [
+            "2",
+            "ATIB",
+            "5013",
+            "Motor Vehicle Supplies and New Parts",
+            "0",
+            "0",
+            "0",
+            "19",
+            "363",
+            "2025-07-18"
+          ],
+          [
+            "2",
+            "ATIB",
+            "5065",
+            "Electrical Parts and Equipment",
+            "0",
+            "0",
+            "0",
+            "1",
+            "91",
+            "2025-07-18"
+          ],
+          [
+            "2",
+            "ATIB",
+            "5211",
+            "Building Materials, Lumber Stores",
+            "0",
+            "0",
+            "0",
+            "13",
+            "257",
+            "2025-07-18"
+          ]
+        ],
+        "template_sample_data": [
+          [
+            "011",
+            "ABC Bank",
+            "5812",
+            "Restaurants",
+            "3",
+            "5",
+            "1",
+            "0",
+            "230",
+            "240",
+            "240",
+            "2025-06-30"
+          ]
+        ],
+        "data_format_issues": [
+          {
+            "column": "report_date",
+            "sample_value": "2025-07-18",
+            "issue": "Date format should be validated"
+          }
+        ]
+      }
+    },
+    "pos_transaction_data": {
+      "tpp_901_structure": {
+        "headers": [
+          "bank_name",
+          "txn_success_count",
+          "txn_failed_count",
+          "total_transaction_amount",
+          "transaction_category",
+          "report_date"
+        ],
+        "header_count": 6,
+        "sample_rows": [
+          [
+            "ATIB",
+            "655",
+            "12",
+            "82938.524",
+            "on-us",
+            "2025-07-18"
+          ],
+          [
+            "MED BANK",
+            "4",
+            "0",
+            "419.750",
+            "on-us",
+            "2025-07-18"
+          ],
+          [
+            "BCD BANK",
+            "157",
+            "14",
+            "22335.626",
+            "on-us",
+            "2025-07-18"
+          ],
+          [
+            "Moamalat",
+            "6240",
+            "0",
+            "441655.626",
+            "off-us",
+            "2025-07-18"
+          ],
+          [
+            "NCB BANK",
+            "0",
+            "9",
+            "0",
+            "on-us",
+            "2025-07-18"
+          ]
+        ],
+        "data_row_count": 5
+      },
+      "template_structure": {
+        "headers": [
+          "bank_name",
+          "txn_success_count",
+          "txn_failed_count",
+          "total_transaction_amount",
+          "transaction_category",
+          "report_date"
+        ],
+        "header_count": 6,
+        "sample_rows": [
+          [
+            "ABC Bank",
+            "1500",
+            "30",
+            "850000.00",
+            "Off-us",
+            "2025-06-30"
+          ]
+        ],
+        "data_row_count": 1
+      },
+      "compatibility": {
+        "tpp_901_headers": [
+          "txn_failed_count",
+          "bank_name",
+          "report_date",
+          "txn_success_count",
+          "total_transaction_amount",
+          "transaction_category"
+        ],
+        "template_headers": [
+          "txn_failed_count",
+          "bank_name",
+          "report_date",
+          "txn_success_count",
+          "total_transaction_amount",
+          "transaction_category"
+        ],
+        "matching_headers": [
+          "txn_failed_count",
+          "report_date",
+          "bank_name",
+          "txn_success_count",
+          "total_transaction_amount",
+          "transaction_category"
+        ],
+        "missing_in_tpp_901": [],
+        "extra_in_tpp_901": [],
+        "compatibility_score": 1.0,
+        "header_count_match": true
+      },
+      "data_analysis": {
+        "tpp_901_sample_data": [
+          [
+            "ATIB",
+            "655",
+            "12",
+            "82938.524",
+            "on-us",
+            "2025-07-18"
+          ],
+          [
+            "MED BANK",
+            "4",
+            "0",
+            "419.750",
+            "on-us",
+            "2025-07-18"
+          ],
+          [
+            "BCD BANK",
+            "157",
+            "14",
+            "22335.626",
+            "on-us",
+            "2025-07-18"
+          ],
+          [
+            "Moamalat",
+            "6240",
+            "0",
+            "441655.626",
+            "off-us",
+            "2025-07-18"
+          ],
+          [
+            "NCB BANK",
+            "0",
+            "9",
+            "0",
+            "on-us",
+            "2025-07-18"
+          ]
+        ],
+        "template_sample_data": [
+          [
+            "ABC Bank",
+            "1500",
+            "30",
+            "850000.00",
+            "Off-us",
+            "2025-06-30"
+          ]
+        ],
+        "data_format_issues": [
+          {
+            "column": "report_date",
+            "sample_value": "2025-07-18",
+            "issue": "Date format should be validated"
+          }
+        ]
+      }
+    }
+  },
+  "recommendations": [
+    "\u2705 ecommerce_card_activity: High compatibility (100.0%) - minimal changes required",
+    "\u26a0\ufe0f pos_terminal_data: Moderate compatibility (83.3%) - minor adjustments needed",
+    "\ud83d\udd27 pos_terminal_data: Add missing columns: terminals_delivered_count, terminals_active_count",
+    "\u2705 pos_transaction_data: High compatibility (100.0%) - minimal changes required"
+  ],
+  "processing_issues": [
+    "\u26a0\ufe0f ecommerce_card_activity: Date format should be validated in column 'report_date' (sample: 2025-07-18)",
+    "\ud83d\udeab pos_terminal_data: Processing will fail due to missing required columns: terminals_delivered_count, terminals_active_count",
+    "\u26a0\ufe0f pos_terminal_data: Date format should be validated in column 'report_date' (sample: 2025-07-18)",
+    "\u26a0\ufe0f pos_transaction_data: Date format should be validated in column 'report_date' (sample: 2025-07-18)"
+  ],
+  "overall_compatibility": 0.9444444444444445
+}

@@ -170,3 +170,4 @@ build
 build/classes/kotlin/*
 build/classes/kotlin
 
+/sample-data/901/*
