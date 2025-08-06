@@ -5,6 +5,8 @@ import {
     TextField, Button, CircularProgress,
     Card, CardContent, CardHeader
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../context/LanguageContext';
 import './BusinessIntelligence.css';
 
 // Simple Bar Chart Component
@@ -563,21 +565,6 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                     borderRadius: 2,
                                     boxShadow: 1
                                 }}>
-                                    <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
-                                        {formatNumber(data.totalTerminals || 0)}
-                                    </Typography>
-                                    <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        🏧 Total Terminals
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ 
-                                    textAlign: 'center', 
-                                    minWidth: '200px',
-                                    p: 2,
-                                    backgroundColor: 'white',
-                                    borderRadius: 2,
-                                    boxShadow: 1
-                                }}>
                                     <Typography variant="h3" color="success.main" sx={{ fontWeight: 'bold' }}>
                                         {formatNumber(data.activeTerminals || 0)}
                                     </Typography>
@@ -813,7 +800,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             }}>
                                 <SimplePieChart 
                                     data={posSuccessFailurePieData} 
-                                    title="POS Transaction Success Rate"
+                                    title="POS Success/Failure Distribution"
                                 />
                             </Box>
                             <Box sx={{ 
@@ -826,9 +813,9 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             }}>
                                 <SimpleBarChart 
                                     data={posTransactionData} 
-                                    title="POS Transaction Volume by Institution" 
+                                    title="POS Transactions by Institution" 
                                     xKey="institution" 
-                                    yKey="totalAmount" 
+                                    yKey="successCount" 
                                     color="#9c27b0"
                                 />
                             </Box>
@@ -1057,7 +1044,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                         {formatNumber((data.totalIssued || 0) - (data.totalExpired || 0) - (data.totalCancelled || 0))}
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        ✅ Active Cards
+                                        ✅ Cards Active
                                     </Typography>
                                 </Box>
                             </Box>
@@ -1137,7 +1124,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                             border: '1px solid #e0e0e0'
                         }}>
                             <Typography variant="h6" sx={{ mb: 3, textAlign: 'center', color: 'primary.main' }}>
-                                🛋 E-commerce Activity Analytics
+                                🛒 E-commerce Activity Analytics
                             </Typography>
                             <Box sx={{ 
                                 display: 'flex', 
@@ -1158,7 +1145,7 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                         {formatNumber(data.totalEnabledCards || 0)}
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        🛋 E-commerce Enabled Cards
+                                        E-commerce Enabled Cards
                                     </Typography>
                                 </Box>
                                 <Box sx={{ 
@@ -1203,14 +1190,14 @@ const EnhancedChart: React.FC<{ title: string; data: any }> = ({ title, data }) 
                                         {data.totalTransactions > 0 ? (data.totalVolume / data.totalTransactions).toFixed(2) : '0'}
                                     </Typography>
                                     <Typography variant="h6" color="textSecondary" sx={{ mt: 1 }}>
-                                        📊 Avg Transaction (LYD)
+                                        📊 Average Transaction Value
                                     </Typography>
                                 </Box>
                             </Box>
                         </Box>
                         
                         <Typography variant="body2" color="success.main" align="center">
-                            📈 {dataPoints} e-commerce activity records processed
+                            📈 {dataPoints} e-commerce records processed
                         </Typography>
                     </Box>
                 );
@@ -1284,6 +1271,8 @@ interface FilterOptions {
 }
 
 const BusinessIntelligence: React.FC = () => {
+    const { t } = useTranslation();
+    const { isRTL } = useLanguage();
     const [selectedReportType, setSelectedReportType] = useState<string>('transaction-volume');
     const [dateRange, setDateRange] = useState<DateRange>({
         startDate: '',
@@ -1302,15 +1291,15 @@ const BusinessIntelligence: React.FC = () => {
     
     // Available banks/institutions for filtering
     const availableBanks = [
-        'All Banks',
-        'Central Bank of Libya',
-        'National Commercial Bank',
-        'Wahda Bank',
-        'Sahara Bank',
-        'Republic Bank',
-        'Mediterranean Bank',
-        'Al Ejmaa Al Arabi Bank',
-        'Libyan Foreign Bank'
+        { key: 'all', label: t('allBanks') },
+        { key: 'central', label: t('centralBankOfLibya') },
+        { key: 'national', label: t('nationalCommercialBank') },
+        { key: 'wahda', label: t('wahdaBank') },
+        { key: 'sahara', label: t('saharaBank') },
+        { key: 'republic', label: t('republicBank') },
+        { key: 'mediterranean', label: t('mediterraneanBank') },
+        { key: 'ejmaa', label: t('alEjmaaAlArabiBank') },
+        { key: 'foreign', label: t('libyanForeignBank') }
     ];
 
     useEffect(() => {
@@ -1453,35 +1442,35 @@ const BusinessIntelligence: React.FC = () => {
     };
 
     return (
-        <Container maxWidth="xl" className="business-intelligence-container">
+        <Container maxWidth="xl" className={`business-intelligence-container ${isRTL ? 'rtl' : ''}`}>
             <Typography variant="h4" component="h1" gutterBottom>
-                Business Intelligence Dashboard
+                {t('businessIntelligence')}
             </Typography>
             
             <Paper className="controls-paper">
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
                     <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
                         <FormControl fullWidth>
-                            <InputLabel>Report Type</InputLabel>
+                            <InputLabel>{t('reportType')}</InputLabel>
                             <Select
                                 value={selectedReportType}
                                 onChange={(e) => setSelectedReportType(e.target.value)}
-                                label="Report Type"
+                                label={t('reportType')}
                             >
-                                <MenuItem value="transaction-volume">Transaction Volume</MenuItem>
-                                <MenuItem value="atm-transactions">ATM Transactions</MenuItem>
-                                <MenuItem value="atm-terminals">ATM Terminals</MenuItem>
-                                <MenuItem value="pos-terminals">POS Terminals</MenuItem>
-                                <MenuItem value="pos-transactions">POS Transactions</MenuItem>
-                                <MenuItem value="card-lifecycle">Card Lifecycle</MenuItem>
-                                <MenuItem value="ecommerce-activity">E-Commerce Activity</MenuItem>
+                                <MenuItem value="transaction-volume">{t('transactionVolume')}</MenuItem>
+                                <MenuItem value="atm-transactions">{t('atmTransactions')}</MenuItem>
+                                <MenuItem value="atm-terminals">{t('atmTerminals')}</MenuItem>
+                                <MenuItem value="pos-terminals">{t('posTerminals')}</MenuItem>
+                                <MenuItem value="pos-transactions">{t('posTransactions')}</MenuItem>
+                                <MenuItem value="card-lifecycle">{t('cardLifecycle')}</MenuItem>
+                                <MenuItem value="ecommerce-activity">{t('ecommerceActivity')}</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
                     
                     <Box sx={{ flex: '1 1 150px', minWidth: '150px' }}>
                         <TextField
-                            label="Start Date"
+                            label={t('startDate')}
                             type="date"
                             value={dateRange.startDate}
                             onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
@@ -1494,7 +1483,7 @@ const BusinessIntelligence: React.FC = () => {
                     
                     <Box sx={{ flex: '1 1 150px', minWidth: '150px' }}>
                         <TextField
-                            label="End Date"
+                            label={t('endDate')}
                             type="date"
                             value={dateRange.endDate}
                             onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
@@ -1508,14 +1497,14 @@ const BusinessIntelligence: React.FC = () => {
                     {/* Bank/Institution Filter */}
                     <Box sx={{ flex: '1 1 200px', minWidth: '200px' }}>
                         <FormControl fullWidth>
-                            <InputLabel>Bank/Institution</InputLabel>
+                            <InputLabel>{t('bank')}</InputLabel>
                             <Select
                                 value={filters.selectedBank}
                                 onChange={(e) => setFilters(prev => ({ ...prev, selectedBank: e.target.value }))}
-                                label="Bank/Institution"
+                                label={t('bank')}
                             >
                                 {availableBanks.map((bank) => (
-                                    <MenuItem key={bank} value={bank}>{bank}</MenuItem>
+                                    <MenuItem key={bank.key} value={bank.label}>{bank.label}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -1525,18 +1514,18 @@ const BusinessIntelligence: React.FC = () => {
                     {selectedReportType === 'atm-transactions' || selectedReportType === 'pos-transactions' ? (
                         <Box sx={{ flex: '1 1 150px', minWidth: '150px' }}>
                             <FormControl fullWidth>
-                                <InputLabel>Transaction Type</InputLabel>
+                                <InputLabel>{t('transactionType')}</InputLabel>
                                 <Select
                                     value={filters.transactionType || ''}
                                     onChange={(e) => setFilters(prev => ({ ...prev, transactionType: e.target.value }))}
-                                    label="Transaction Type"
+                                    label={t('transactionType')}
                                 >
-                                    <MenuItem value="">All Types</MenuItem>
-                                    <MenuItem value="successful">Successful Only</MenuItem>
-                                    <MenuItem value="failed">Failed Only</MenuItem>
-                                    <MenuItem value="withdrawal">Withdrawals</MenuItem>
-                                    <MenuItem value="deposit">Deposits</MenuItem>
-                                    <MenuItem value="balance">Balance Inquiry</MenuItem>
+                                    <MenuItem value="">{t('allTypes')}</MenuItem>
+                                    <MenuItem value="successful">{t('successfulOnly')}</MenuItem>
+                                    <MenuItem value="failed">{t('failedOnly')}</MenuItem>
+                                    <MenuItem value="withdrawal">{t('withdrawals')}</MenuItem>
+                                    <MenuItem value="deposit">{t('deposits')}</MenuItem>
+                                    <MenuItem value="balance">{t('balanceInquiry')}</MenuItem>
                                 </Select>
                             </FormControl>
                         </Box>
@@ -1545,16 +1534,16 @@ const BusinessIntelligence: React.FC = () => {
                     {selectedReportType === 'atm-terminals' || selectedReportType === 'pos-terminals' ? (
                         <Box sx={{ flex: '1 1 150px', minWidth: '150px' }}>
                             <FormControl fullWidth>
-                                <InputLabel>Terminal Status</InputLabel>
+                                <InputLabel>{t('terminalStatus')}</InputLabel>
                                 <Select
                                     value={filters.terminalStatus || ''}
                                     onChange={(e) => setFilters(prev => ({ ...prev, terminalStatus: e.target.value }))}
-                                    label="Terminal Status"
+                                    label={t('terminalStatus')}
                                 >
-                                    <MenuItem value="">All Status</MenuItem>
-                                    <MenuItem value="active">Active Only</MenuItem>
-                                    <MenuItem value="inactive">Inactive Only</MenuItem>
-                                    <MenuItem value="maintenance">Under Maintenance</MenuItem>
+                                    <MenuItem value="">{t('allStatus')}</MenuItem>
+                                    <MenuItem value="active">{t('activeOnly')}</MenuItem>
+                                    <MenuItem value="inactive">{t('inactiveOnly')}</MenuItem>
+                                    <MenuItem value="maintenance">{t('underMaintenance')}</MenuItem>
                                 </Select>
                             </FormControl>
                         </Box>
@@ -1563,18 +1552,18 @@ const BusinessIntelligence: React.FC = () => {
                     {selectedReportType === 'card-lifecycle' ? (
                         <Box sx={{ flex: '1 1 150px', minWidth: '150px' }}>
                             <FormControl fullWidth>
-                                <InputLabel>Card Status</InputLabel>
+                                <InputLabel>{t('cardStatus')}</InputLabel>
                                 <Select
                                     value={filters.cardStatus || ''}
                                     onChange={(e) => setFilters(prev => ({ ...prev, cardStatus: e.target.value }))}
-                                    label="Card Status"
+                                    label={t('cardStatus')}
                                 >
-                                    <MenuItem value="">All Status</MenuItem>
-                                    <MenuItem value="issued">Issued</MenuItem>
-                                    <MenuItem value="active">Active</MenuItem>
-                                    <MenuItem value="expired">Expired</MenuItem>
-                                    <MenuItem value="cancelled">Cancelled</MenuItem>
-                                    <MenuItem value="blocked">Blocked</MenuItem>
+                                    <MenuItem value="">{t('allStatus')}</MenuItem>
+                                    <MenuItem value="issued">{t('issued')}</MenuItem>
+                                    <MenuItem value="active">{t('active')}</MenuItem>
+                                    <MenuItem value="expired">{t('expired')}</MenuItem>
+                                    <MenuItem value="cancelled">{t('cancelled')}</MenuItem>
+                                    <MenuItem value="blocked">{t('blocked')}</MenuItem>
                                 </Select>
                             </FormControl>
                         </Box>
@@ -1594,7 +1583,7 @@ const BusinessIntelligence: React.FC = () => {
                             })}
                             sx={{ height: '56px' }}
                         >
-                            🗑️ Clear Filters
+                            🗑️ {t('clearFilters')}
                         </Button>
                     </Box>
 
@@ -1604,12 +1593,15 @@ const BusinessIntelligence: React.FC = () => {
             {loading && (
                 <Box display="flex" justifyContent="center" my={4}>
                     <CircularProgress />
+                    <Typography variant="body2" sx={{ ml: 2, alignSelf: 'center' }}>
+                        {t('loading')}...
+                    </Typography>
                 </Box>
             )}
 
             {error && (
                 <Typography color="error" variant="body1" align="center">
-                    Error: {error}
+                    {t('error')}: {error}
                 </Typography>
             )}
 

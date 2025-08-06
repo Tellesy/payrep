@@ -1,36 +1,119 @@
 .bi-container {
     padding-top: 20px;
     padding-bottom: 40px;
+    font-family: 'Almarai', sans-serif;
+}
+
+/* RTL Support */
+[dir="rtl"] .bi-container {
+    direction: rtl;
 }
 
 .controls-paper {
     padding: 24px;
     margin-bottom: 24px;
     background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+[dir="rtl"] .controls-paper {
+    text-align: right;
 }
 
 .error-paper {
     padding: 16px;
     margin: 24px 0;
     background-color: #fff3f3;
+    border-radius: 8px;
+}
+
+[dir="rtl"] .error-paper {
+    text-align: right;
 }
 
 .chart-card {
     margin-bottom: 24px;
+    border-radius: 8px;
 }
 
 .summary-card {
     margin-bottom: 24px;
     background-color: #f5f9ff;
+    border-radius: 8px;
+}
+
+[dir="rtl"] .summary-card {
+    text-align: right;
 }
 
 .summary-value {
     font-size: 2rem;
     font-weight: bold;
     color: #0056b3;
+    font-family: 'Almarai', sans-serif;
 }
 
 .summary-label {
     color: #666;
     font-size: 1rem;
+    font-family: 'Almarai', sans-serif;
+}
+
+/* Material-UI RTL Overrides for BI */
+[dir="rtl"] .MuiFormControl-root {
+    text-align: right;
+}
+
+[dir="rtl"] .MuiInputLabel-root {
+    transform-origin: top right;
+    right: 14px;
+    left: auto;
+}
+
+[dir="rtl"] .MuiInputLabel-shrink {
+    transform: translate(0, -9px) scale(0.75);
+}
+
+[dir="rtl"] .MuiSelect-select {
+    text-align: right;
+    padding-right: 14px;
+    padding-left: 32px;
+}
+
+[dir="rtl"] .MuiSelect-icon {
+    left: 7px;
+    right: auto;
+}
+
+[dir="rtl"] .MuiMenuItem-root {
+    text-align: right;
+}
+
+/* Button RTL Support */
+[dir="rtl"] .MuiButton-root {
+    font-family: 'Almarai', sans-serif;
+}
+
+/* Typography RTL Support */
+[dir="rtl"] .MuiTypography-root {
+    font-family: 'Almarai', sans-serif;
+    text-align: right;
+}
+
+/* Loading indicator RTL */
+[dir="rtl"] .MuiCircularProgress-root + .MuiTypography-root {
+    margin-right: 16px;
+    margin-left: 0;
+}
+
+/* Responsive adjustments for RTL */
+@media (max-width: 768px) {
+    [dir="rtl"] .bi-container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    
+    [dir="rtl"] .controls-paper {
+        padding: 16px;
+    }
 }
