@@ -6,7 +6,9 @@ import com.payrep.service.*
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.io.File
+import java.io.FileWriter
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import org.slf4j.LoggerFactory
 
 @Service
@@ -24,6 +26,26 @@ class FileIngestionService(
     private val transactionVolumeRepository: TransactionVolumeRepository
 ) {
     private val logger = LoggerFactory.getLogger(FileIngestionService::class.java)
+    private val logFileName = "debug-logs/file-processing-${LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))}.log"
+    
+    private fun logToFileAndConsole(message: String) {
+        val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
+        val logMessage = "[$timestamp] $message"
+        
+        // Console log
+        logger.info(logMessage)
+        
+        // File log
+        try {
+            val logFile = File(logFileName)
+            logFile.parentFile?.mkdirs()
+            FileWriter(logFile, true).use { writer ->
+                writer.appendLine(logMessage)
+            }
+        } catch (e: Exception) {
+            logger.error("ERROR: Failed to write to log file: ${e.message}")
+        }
+    }
 
     @Scheduled(cron = "0 */2 * * * ?") // Every 2 minutes - matches TPP 901 schedule
     fun processFiles() {
@@ -95,7 +117,8 @@ class FileIngestionService(
             logger.info("Processing file: ${file.name}")
             
             val parsedData = fileParser.parseFile(file, config)
-            saveData(parsedData, config.fileType, config.bankOrTPP.code, file.name)
+            val entityType = determineEntityTypeFromFileName(file.name)
+            saveData(file.name, parsedData, entityType, config.bankOrTPP.code)
             val updatedLog = importLogSaved.copy(status = ImportLog.ImportStatus.SUCCESS)
             importLogRepository.save(updatedLog)
             
@@ -112,18 +135,26 @@ class FileIngestionService(
         }
     }
 
-    private fun saveData(data: List<Map<String, Any>>, fileType: String, processorCode: String, fileName: String) {
-        // Determine entity type from file name since all configs now use fileType="CSV"
-        val entityType = determineEntityTypeFromFileName(fileName)
-        logger.info("Determined entity type '$entityType' for file: $fileName")
+    private fun saveData(fileName: String, records: List<Map<String, Any>>, entityType: String, processorCode: String) {
+        logToFileAndConsole("=== SAVE DATA DEBUG ===")
+        logToFileAndConsole("File: $fileName, Processor: $processorCode, Entity Type: $entityType")
+        logToFileAndConsole("Total records to process: ${records.size}")
         
-        data.forEach { record ->
+        var successCount = 0
+        var failureCount = 0
+        
+        records.forEachIndexed { index, record ->
+            val recordIndex = index + 1
+            logToFileAndConsole("Processing record $recordIndex of ${records.size}")
+            
             try {
+                var recordSaved = false
                 when (entityType) {
                     "ATM Terminal Data" -> {
                         val entity = dataMapper.run { record.toAtmTerminalData(processorCode) }
                         if (entity != null) {
                             atmTerminalDataRepository.save(entity)
+                            recordSaved = true
                             logger.debug("Saved ATM Terminal Data record for processor $processorCode")
                         } else {
                             logger.warn("Skipped ATM Terminal Data record due to institution conversion failure")
@@ -148,16 +179,28 @@ class FileIngestionService(
                         }
                     }
                     "E-Commerce Card Activity" -> {
+                        logToFileAndConsole("=== E-COMMERCE CARD ACTIVITY PROCESSING ===")
+                        logToFileAndConsole("Processing E-Commerce Card Activity record $recordIndex for processor $processorCode")
+                        logToFileAndConsole("Record data: $record")
                         logger.info("Processing E-Commerce Card Activity record for processor $processorCode")
                         logger.info("Record data: $record")
+                        
+                        logToFileAndConsole("Calling dataMapper.toECommerceCardActivity(processorCode=$processorCode)")
                         val entity = dataMapper.run { record.toECommerceCardActivity(processorCode) }
+                        
                         if (entity != null) {
+                            logToFileAndConsole("SUCCESS: Entity created successfully, saving to repository")
                             eCommerceCardActivityRepository.save(entity)
+                            logToFileAndConsole("SUCCESS: Saved E-Commerce Card Activity record to database")
                             logger.info("SUCCESS: Saved E-Commerce Card Activity record for processor $processorCode")
                         } else {
+                            logToFileAndConsole("CRITICAL ERROR: E-Commerce Card Activity record conversion returned NULL")
+                            logToFileAndConsole("This means convertInstitutionId failed or entity creation failed")
+                            logToFileAndConsole("Record that failed conversion: $record")
                             logger.error("FAILED: E-Commerce Card Activity record conversion returned null for processor $processorCode")
                             logger.error("Record that failed: $record")
                         }
+                        logToFileAndConsole("=== END E-COMMERCE PROCESSING ===")
                     }
                     "POS Terminal Data" -> {
                         val entity = dataMapper.run { record.toPosTerminalData(processorCode) }
@@ -196,7 +239,7 @@ class FileIngestionService(
                 // Continue processing other records instead of failing the entire file
             }
         }
-        logger.info("Completed saving ${data.size} records for entity type: $entityType")
+        logger.info("Completed saving ${records.size} records for entity type: $entityType")
     }
     
     private fun determineEntityTypeFromFileName(fileName: String): String {
