@@ -11,7 +11,7 @@ import java.time.LocalDateTime
     name = "transaction_volume",
     uniqueConstraints = [
         UniqueConstraint(columnNames = [
-            "institution_id",
+            "bank_or_tpp_id",
             "channel_code",
             "transaction_type_code",
             "mcc_code",
@@ -25,42 +25,42 @@ data class TransactionVolume(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @Column(nullable = false)
-    val institution_id: String,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bank_or_tpp_id", nullable = false)
+    val bankOrTPP: BankOrTPP,
 
     @Column(nullable = false)
-    val institution_name: String,
+    val channelCode: String,
 
     @Column(nullable = false)
-    val channel_code: String,
+    val transactionTypeCode: String,
+
+    @Column(nullable = true)
+    val transactionTypeDesc: String?,
 
     @Column(nullable = false)
-    val transaction_type_code: String,
+    val mccCode: String,
 
-    val transaction_type_desc: String,
-
-    @Column(nullable = false)
-    val mcc_code: String,
-
-    val mcc_description: String,
+    @Column(nullable = true)
+    val mccDescription: String?,
 
     @Column(nullable = false)
-    val txn_count: Int,
+    val txnCount: Int,
 
     @Column(nullable = false, precision = 15, scale = 2)
-    val txn_total_amount: BigDecimal,
+    val txnTotalAmount: BigDecimal,
 
     @Column(nullable = false)
-    val txn_success_count: Int,
+    val txnSuccessCount: Int,
 
     @Column(nullable = false)
-    val txn_failed_count: Int,
+    val txnFailedCount: Int,
 
     @Column(nullable = false)
-    val transaction_category: String,
+    val transactionCategory: String,
 
     @Column(nullable = false)
-    val report_date: LocalDate,
+    val reportDate: LocalDate,
 
     @Column(nullable = true)
     val currency: String = "LYD",

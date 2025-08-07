@@ -25,6 +25,9 @@ data class BankOrTPP(
     @Column(nullable = false)
     val type: BankOrTPPType,
 
+    @Column(nullable = false)
+    val useConverter: Boolean = false,
+
     @CreationTimestamp
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) {

@@ -6,6 +6,7 @@ data class BankOrTppDto(
     val id: Long?,
     val code: String,
     val name: String,
-    val type: BankOrTPPType
+    val type: BankOrTPPType,
+    val useConverter: Boolean = false
 )
 

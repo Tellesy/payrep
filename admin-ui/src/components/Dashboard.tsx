@@ -24,6 +24,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import LockIcon from '@mui/icons-material/Lock';
 import LockResetIcon from '@mui/icons-material/LockReset';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -146,6 +147,14 @@ const Dashboard: React.FC = () => {
                                     <TableChartIcon />
                                 </ListItemIcon>
                                 <ListItemText primary={t('columnMappings')} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton component={Link} to="/dashboard/institution-converter" onClick={() => setSidebarOpen(false)}>
+                                <ListItemIcon>
+                                    <SwapHorizIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={t('institutionConverter')} />
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>

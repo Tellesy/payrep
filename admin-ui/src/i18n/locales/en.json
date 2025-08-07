@@ -8,6 +8,7 @@
   "bankTppManagement": "Bank/TPP Management",
   "fileConfigurations": "File Configurations",
   "columnMappings": "Column Mappings",
+  "institutionConverter": "Institution Converter",
   "importLogs": "Import Logs",
   "businessIntelligence": "Business Intelligence",
   "logout": "Logout",

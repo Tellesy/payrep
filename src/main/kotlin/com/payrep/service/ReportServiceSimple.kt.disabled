@@ -176,17 +176,17 @@ class ReportServiceSimple(
         }
         println("DEBUG: After institution filter '${institution}': ${filteredData.size} records")
         
-        val totalIssued = filteredData.sumOf { it.cards_issued_count }
-        val totalActivated = filteredData.sumOf { it.cards_activated_count }
+        val totalIssued = filteredData.sumOf { it.cardsIssuedCount }
+        val totalActivated = filteredData.sumOf { it.cardsActivatedCount }
         
         return mapOf(
             "totalIssued" to totalIssued,
             "totalActivated" to totalActivated,
             "chartData" to data.map { mapOf(
-                "date" to it.report_date.toString(),
-                "institution" to it.institution_name,
-                "issued" to it.cards_issued_count,
-                "activated" to it.cards_activated_count
+                "date" to it.reportDate.toString(),
+                "institution" to it.bankOrTPP.name,
+                "issued" to it.cardsIssuedCount,
+                "activated" to it.cardsActivatedCount
             )}
         )
     }

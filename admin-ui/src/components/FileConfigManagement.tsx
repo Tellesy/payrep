@@ -9,6 +9,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
+import CronScheduler from './CronScheduler';
 
 // Define types
 interface FileProcessingConfig {
@@ -292,16 +293,13 @@ const FileConfigManagement: React.FC = () => {
                             />
                         </Box>
                         <Box>
-                            <TextField
-                                fullWidth
-                                label="Schedule (CRON Expression)"
-                                value={currentConfig?.scheduleTime || ''}
-                                onChange={(e) => setCurrentConfig({
+                            <CronScheduler
+                                value={currentConfig?.scheduleTime || '0 0 * * *'}
+                                onChange={(cronExpression) => setCurrentConfig({
                                     ...currentConfig,
-                                    scheduleTime: e.target.value
+                                    scheduleTime: cronExpression
                                 })}
-                                placeholder="0 0 * * *"
-                                helperText="CRON expression for scheduling (e.g., '0 0 * * *' for midnight daily)"
+                                label="Schedule"
                             />
                         </Box>
                         <Box>

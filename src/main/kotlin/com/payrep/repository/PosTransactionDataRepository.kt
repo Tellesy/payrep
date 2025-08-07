@@ -8,6 +8,6 @@ import java.time.LocalDate
 
 @Repository
 interface PosTransactionDataRepository : JpaRepository<PosTransactionData, Long> {
-    @Query("SELECT p FROM PosTransactionData p WHERE p.report_date BETWEEN :startDate AND :endDate")
+    @Query("SELECT p FROM PosTransactionData p WHERE p.reportDate BETWEEN :startDate AND :endDate")
     fun findByReportDateBetween(startDate: LocalDate, endDate: LocalDate): List<PosTransactionData>
 }

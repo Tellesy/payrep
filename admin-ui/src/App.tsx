@@ -11,6 +11,7 @@ import ResetPassword from './components/ResetPassword';
 import BankTppManagement from './components/BankTppManagement';
 import FileConfigManagement from './components/FileConfigManagement';
 import ColumnMappingManagement from './components/ColumnMappingManagement';
+import InstitutionConverter from './components/InstitutionConverter';
 import ImportLogViewer from './components/ImportLogViewer';
 import BusinessIntelligence from './components/BusinessIntelligence';
 import './i18n';
@@ -32,6 +33,7 @@ const App: React.FC = () => {
                             <Route path="banks-and-tpps" element={<BankTppManagement />} />
                             <Route path="file-configs" element={<FileConfigManagement />} />
                             <Route path="column-mappings" element={<ColumnMappingManagement />} />
+                            <Route path="institution-converter" element={<InstitutionConverter />} />
                             <Route path="import-logs" element={<ImportLogViewer />} />
                             <Route path="business-intelligence" element={<BusinessIntelligence />} />
                             <Route path="create-user" element={<CreateUser />} />

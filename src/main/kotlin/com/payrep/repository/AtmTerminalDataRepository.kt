@@ -8,6 +8,6 @@ import java.time.LocalDate
 
 @Repository
 interface AtmTerminalDataRepository : JpaRepository<AtmTerminalData, Long> {
-    @Query("SELECT a FROM AtmTerminalData a WHERE a.report_date BETWEEN :startDate AND :endDate")
+    @Query("SELECT a FROM AtmTerminalData a WHERE a.reportDate BETWEEN :startDate AND :endDate")
     fun findByReportDateBetween(startDate: LocalDate, endDate: LocalDate): List<AtmTerminalData>
 }

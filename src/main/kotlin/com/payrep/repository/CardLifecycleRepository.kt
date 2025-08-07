@@ -8,6 +8,6 @@ import java.time.LocalDate
 
 @Repository
 interface CardLifecycleRepository : JpaRepository<CardLifecycle, Long> {
-    @Query("SELECT c FROM CardLifecycle c WHERE c.report_date BETWEEN :startDate AND :endDate")
+    @Query("SELECT c FROM CardLifecycle c WHERE c.reportDate BETWEEN :startDate AND :endDate")
     fun findByReportDateBetween(startDate: LocalDate, endDate: LocalDate): List<CardLifecycle>
 }
