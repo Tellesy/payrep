@@ -30,6 +30,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LanguageIcon from '@mui/icons-material/Language';
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import { ReactComponent as Logo } from '../assets/logo.svg';
 import './Dashboard.css';
 
@@ -147,6 +148,14 @@ const Dashboard: React.FC = () => {
                                     <TableChartIcon />
                                 </ListItemIcon>
                                 <ListItemText primary={t('columnMappings')} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton component={Link} to="/dashboard/header-definitions" onClick={() => setSidebarOpen(false)}>
+                                <ListItemIcon>
+                                    <ViewColumnIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"Header Definitions"} />
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>

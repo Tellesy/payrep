@@ -31,6 +31,10 @@ dependencies {
     runtimeOnly("mysql:mysql-connector-java:8.0.33")
     runtimeOnly("com.oracle.database.jdbc:ojdbc8:21.9.0.0")
 
+    // Flyway for database migrations
+    implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-mysql")
+
     // CSV parsing
     implementation("com.opencsv:opencsv:5.9")
 
