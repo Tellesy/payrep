@@ -155,7 +155,7 @@ const Dashboard: React.FC = () => {
                                 <ListItemIcon>
                                     <ViewColumnIcon />
                                 </ListItemIcon>
-                                <ListItemText primary={"Header Definitions"} />
+                                <ListItemText primary={t('headerDefinitions')} />
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>

@@ -26,6 +26,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
+import { useTranslation } from 'react-i18next';
 
 interface HeaderDefinition {
   id: number;
@@ -42,6 +43,7 @@ interface HeaderAlias {
 
 const HeaderDefinitionManagement: React.FC = () => {
   const { token, logout } = useAuth();
+  const { t } = useTranslation();
 
   const [defs, setDefs] = useState<HeaderDefinition[]>([]);
   const [aliases, setAliases] = useState<Record<number, HeaderAlias[]>>({});
@@ -114,7 +116,7 @@ const HeaderDefinitionManagement: React.FC = () => {
       setDefs(deduped);
       setError(null);
     } catch (e: any) {
-      setError(`Failed to load headers. ${e.message}. If the backend API is not implemented yet, this page will show empty data.`);
+      setError(`${t('failedToLoadHeaders')}: ${e.message}`);
     } finally {
       setLoading(false);
     }
@@ -167,7 +169,7 @@ const HeaderDefinitionManagement: React.FC = () => {
 
   const saveCurrent = async () => {
     if (!current || !current.entityType || !current.key || !current.displayName) {
-      setError('Please fill entityType, headerKey, and displayName');
+      setError(t('pleaseFillRequiredFields'));
       return;
     }
     try {
@@ -184,27 +186,27 @@ const HeaderDefinitionManagement: React.FC = () => {
         )
       });
       if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
-      setSuccessMsg('Saved successfully');
+      setSuccessMsg(t('savedSuccessfully'));
       setEditOpen(false);
       setCurrent(null);
       fetchDefs();
     } catch (e: any) {
-      setError(`Save failed: ${e.message}`);
+      setError(`${t('saveFailed')}: ${e.message}`);
     }
   };
 
   const deleteDef = async (id: number) => {
-    if (!window.confirm('Delete this header definition?')) return;
+    if (!window.confirm(t('deleteConfirmHeader'))) return;
     try {
       const res = await fetch(`${headersEndpoint}/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error(`${res.status}`);
-      setSuccessMsg('Deleted');
+      setSuccessMsg(t('deleted'));
       setDefs(prev => prev.filter(d => d.id !== id));
     } catch (e: any) {
-      setError(`Delete failed: ${e.message}`);
+      setError(`${t('deleteFailed')}: ${e.message}`);
     }
   };
 
@@ -226,9 +228,9 @@ const HeaderDefinitionManagement: React.FC = () => {
       if (!res.ok) throw new Error(`${res.status}`);
       setNewAlias('');
       await fetchAliasesFor(aliasTarget.id);
-      setSuccessMsg('Alias added');
+      setSuccessMsg(t('aliasAdded'));
     } catch (e: any) {
-      setError(`Add alias failed: ${e.message}`);
+      setError(`${t('addAliasFailed')}: ${e.message}`);
     }
   };
 
@@ -242,7 +244,7 @@ const HeaderDefinitionManagement: React.FC = () => {
       if (!res.ok) throw new Error(`${res.status}`);
       await fetchAliasesFor(aliasTarget.id);
     } catch (e: any) {
-      setError(`Remove alias failed: ${e.message}`);
+      setError(`${t('removeAliasFailed')}: ${e.message}`);
     }
   };
 
@@ -250,15 +252,15 @@ const HeaderDefinitionManagement: React.FC = () => {
     <Paper sx={{ p: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
         <ViewColumnIcon color="primary" />
-        <Typography variant="h6">Header Definitions</Typography>
+        <Typography variant="h6">{t('headerDefinitions')}</Typography>
       </Box>
 
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
         <Box sx={{ flex: { xs: '1 1 100%', md: '0 0 25%' }, minWidth: { md: 260 } }}>
           <FormControl fullWidth>
-            <InputLabel>Entity Type</InputLabel>
-            <Select value={filterEntity} label="Entity Type" onChange={(e) => setFilterEntity(e.target.value)}>
-              <MenuItem value="">All</MenuItem>
+            <InputLabel>{t('entityType')}</InputLabel>
+            <Select value={filterEntity} label={t('entityType')} onChange={(e) => setFilterEntity(e.target.value)}>
+              <MenuItem value="">{t('all')}</MenuItem>
               {uniqueEntities.map(et => (
                 <MenuItem key={et} value={et}>{et}</MenuItem>
               ))}
@@ -266,10 +268,10 @@ const HeaderDefinitionManagement: React.FC = () => {
           </FormControl>
         </Box>
         <Box sx={{ flex: { xs: '1 1 100%', md: '0 0 41.666%' }, minWidth: { md: 320 } }}>
-          <TextField fullWidth label="Search" placeholder="Search by key or display name" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <TextField fullWidth label={t('search')} placeholder={t('searchHeadersPlaceholder')} value={search} onChange={(e) => setSearch(e.target.value)} />
         </Box>
         <Box sx={{ flex: { xs: '1 1 100%', md: '0 0 33.333%' }, display: 'flex', justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
-          <Button variant="contained" startIcon={<AddIcon />} onClick={openCreate}>New Header</Button>
+          <Button variant="contained" startIcon={<AddIcon />} onClick={openCreate}>{t('newHeader')}</Button>
         </Box>
       </Box>
 
@@ -285,11 +287,11 @@ const HeaderDefinitionManagement: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Entity Type</TableCell>
-              <TableCell>Key</TableCell>
-              <TableCell>Display Name</TableCell>
-              <TableCell>Aliases</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell>{t('entityType')}</TableCell>
+              <TableCell>{t('key')}</TableCell>
+              <TableCell>{t('displayName')}</TableCell>
+              <TableCell>{t('aliases')}</TableCell>
+              <TableCell align="right">{t('actions')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -303,7 +305,7 @@ const HeaderDefinitionManagement: React.FC = () => {
                     {(aliases[def.id] || []).slice(0, 5).map(a => (
                       <Chip key={a.id} size="small" label={a.alias} onDelete={() => removeAlias(a.id)} />
                     ))}
-                    <Button size="small" onClick={() => openAliasDialog(def)}>Manage</Button>
+                    <Button size="small" onClick={() => openAliasDialog(def)}>{t('manage')}</Button>
                   </Box>
                 </TableCell>
                 <TableCell align="right">
@@ -315,7 +317,7 @@ const HeaderDefinitionManagement: React.FC = () => {
             {filtered.length === 0 && (
               <TableRow>
                 <TableCell colSpan={5}>
-                  <Typography align="center" sx={{ py: 3 }}>No headers found.</Typography>
+                  <Typography align="center" sx={{ py: 3 }}>{t('noHeadersFound')}</Typography>
                 </TableCell>
               </TableRow>
             )}
@@ -325,14 +327,14 @@ const HeaderDefinitionManagement: React.FC = () => {
 
       {/* Create/Edit Dialog */}
       <Dialog open={editOpen} onClose={() => setEditOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>{current?.id ? 'Edit Header' : 'New Header'}</DialogTitle>
+        <DialogTitle>{current?.id ? t('editHeader') : t('newHeader')}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
             <FormControl fullWidth>
-              <InputLabel>Entity Type</InputLabel>
+              <InputLabel>{t('entityType')}</InputLabel>
               <Select
                 value={current?.entityType || ''}
-                label="Entity Type"
+                label={t('entityType')}
                 onChange={(e) => setCurrent(prev => ({ ...(prev || {}), entityType: e.target.value }))}
               >
                 {/* Allow free text by showing current entity + known entities */}
@@ -345,16 +347,16 @@ const HeaderDefinitionManagement: React.FC = () => {
               </Select>
             </FormControl>
             <TextField
-              label="Key"
-              placeholder="canonical_key"
+              label={t('key')}
+              placeholder={t('keyPlaceholder')}
               value={current?.key || ''}
               onChange={(e) => setCurrent(prev => ({ ...(prev || {}), key: e.target.value }))}
-              helperText="Canonical field key (must be unique within entityType)"
+              helperText={t('canonicalKeyHelper')}
               fullWidth
             />
             <TextField
-              label="Display Name"
-              placeholder="Canonical Display Name"
+              label={t('displayName')}
+              placeholder={t('displayNamePlaceholder')}
               value={current?.displayName || ''}
               onChange={(e) => setCurrent(prev => ({ ...(prev || {}), displayName: e.target.value }))}
               fullWidth
@@ -362,24 +364,26 @@ const HeaderDefinitionManagement: React.FC = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditOpen(false)}>Cancel</Button>
-          <Button onClick={saveCurrent} variant="contained">Save</Button>
+          <Button onClick={() => setEditOpen(false)}>{t('cancel')}</Button>
+          <Button onClick={saveCurrent} variant="contained">{t('save')}</Button>
         </DialogActions>
       </Dialog>
 
       {/* Alias Dialog */}
       <Dialog open={aliasOpen} onClose={() => setAliasOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>Manage Aliases {aliasTarget ? `for ${aliasTarget.displayName}` : ''}</DialogTitle>
+        <DialogTitle>
+          {t('manageAliases')} {aliasTarget ? `(${aliasTarget.displayName})` : ''}
+        </DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
             <TextField
-              label="New Alias"
+              label={t('newAlias')}
               value={newAlias}
               onChange={(e) => setNewAlias(e.target.value)}
               fullWidth
-              placeholder="e.g., Display Name variations"
+              placeholder={t('newAliasPlaceholder')}
             />
-            <Button variant="contained" onClick={addAlias} startIcon={<AddIcon />}>Add</Button>
+            <Button variant="contained" onClick={addAlias} startIcon={<AddIcon />}>{t('add')}</Button>
           </Box>
           <Divider sx={{ mb: 2 }} />
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -388,12 +392,12 @@ const HeaderDefinitionManagement: React.FC = () => {
                 <Chip key={a.id} label={a.alias} onDelete={() => removeAlias(a.id)} />
               ))
             ) : (
-              <Typography variant="body2" color="text.secondary">No aliases yet.</Typography>
+              <Typography variant="body2" color="text.secondary">{t('noAliasesYet')}</Typography>
             )}
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setAliasOpen(false)}>Close</Button>
+          <Button onClick={() => setAliasOpen(false)}>{t('close')}</Button>
         </DialogActions>
       </Dialog>
 
