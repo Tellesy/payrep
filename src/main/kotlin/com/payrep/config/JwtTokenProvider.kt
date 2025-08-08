@@ -4,18 +4,22 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
+import java.nio.charset.StandardCharsets
 import java.util.Date
 
 @Component
-class JwtTokenProvider {
+class JwtTokenProvider(
+    @Value("\${jwt.secret:dev-insecure-secret-change-me}") private val jwtSecret: String,
+    @Value("\${jwt.validity.ms:3600000}") private val validityInMilliseconds: Long, // default 1 hour
+) {
 
-    // TODO: Move secret key to a secure configuration file
-    private val secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512)
-    private val validityInMilliseconds: Long = 3600000 // 1 hour
+    // Stable key derived from configuration
+    private val secretKey = Keys.hmacShaKeyFor(jwtSecret.toByteArray(StandardCharsets.UTF_8))
 
     fun generateToken(authentication: Authentication): String {
         val username = authentication.name

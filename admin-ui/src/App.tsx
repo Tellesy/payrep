@@ -15,6 +15,7 @@ import InstitutionConverter from './components/InstitutionConverter';
 import ImportLogViewer from './components/ImportLogViewer';
 import BusinessIntelligence from './components/BusinessIntelligence';
 import HeaderDefinitionManagement from './components/HeaderDefinitionManagement';
+import NewFileWizard from './components/NewFileWizard';
 import './i18n';
 import './styles/fonts.css';
 import './App.css';
@@ -35,6 +36,7 @@ const App: React.FC = () => {
                             <Route path="file-configs" element={<FileConfigManagement />} />
                             <Route path="column-mappings" element={<ColumnMappingManagement />} />
                             <Route path="header-definitions" element={<HeaderDefinitionManagement />} />
+                            <Route path="new-file-wizard" element={<NewFileWizard />} />
                             <Route path="institution-converter" element={<InstitutionConverter />} />
                             <Route path="import-logs" element={<ImportLogViewer />} />
                             <Route path="business-intelligence" element={<BusinessIntelligence />} />

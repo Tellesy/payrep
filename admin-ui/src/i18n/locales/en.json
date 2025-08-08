@@ -221,5 +221,24 @@
   "deleteFailed": "Delete failed",
   "aliasAdded": "Alias added",
   "addAliasFailed": "Add alias failed",
-  "removeAliasFailed": "Remove alias failed"
+  "removeAliasFailed": "Remove alias failed",
+  
+  "newFileWizard": "New File Wizard",
+  "uploadAndDetect": "Upload & Detect",
+  "assignToSource": "Assign to Source",
+  "upload": "Upload",
+  "detectedHeaders": "Detected Headers",
+  "previewRows": "Previewed Rows",
+  "column": "Column",
+  "samples": "Samples",
+  "bankOrTPP": "Bank or TPP",
+  "pauseAfterStepTwoNote": "We will pause after Step 2 for review before implementing mapping and subsequent steps.",
+  "previous": "Previous",
+  "next": "Next",
+  "pleaseSelectAFile": "Please select a file first",
+  "pleaseLoginAgain": "Your session has expired. Please log in again.",
+  "unauthorized": "Unauthorized: Full authentication is required.",
+  "forbidden": "Forbidden: You do not have permission to perform this action.",
+  "networkError": "Network error. Please try again.",
+  "uploadFailed": "Upload failed. Please try again."
 }

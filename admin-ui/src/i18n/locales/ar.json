@@ -218,5 +218,24 @@
   "deleteFailed": "فشل الحذف",
   "aliasAdded": "تمت إضافة الاسم البديل",
   "addAliasFailed": "فشل إضافة الاسم البديل",
-  "removeAliasFailed": "فشل إزالة الاسم البديل"
+  "removeAliasFailed": "فشل إزالة الاسم البديل",
+  
+  "newFileWizard": "معالج ملف جديد",
+  "uploadAndDetect": "تحميل وكشف",
+  "assignToSource": "تعيين إلى المصدر",
+  "upload": "تحميل",
+  "detectedHeaders": "العناوين المكتشفة",
+  "previewRows": "الصفوف المعاينة",
+  "column": "العمود",
+  "samples": "عينات",
+  "bankOrTPP": "بنك أو مقدم خدمة",
+  "pauseAfterStepTwoNote": "سوف نتوقف بعد الخطوة 2 للمراجعة قبل تنفيذ التخطيط والخطوات اللاحقة.",
+  "previous": "السابق",
+  "next": "التالي",
+  "pleaseSelectAFile": "يرجى اختيار ملف أولاً",
+  "pleaseLoginAgain": "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.",
+  "unauthorized": "غير مصرح: يلزم مصادقة كاملة.",
+  "forbidden": "ممنوع: ليس لديك صلاحية لتنفيذ هذا الإجراء.",
+  "networkError": "خطأ في الشبكة. يرجى المحاولة مرة أخرى.",
+  "uploadFailed": "فشل التحميل. يرجى المحاولة مرة أخرى."
 }

@@ -31,6 +31,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LanguageIcon from '@mui/icons-material/Language';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { ReactComponent as Logo } from '../assets/logo.svg';
 import './Dashboard.css';
 
@@ -156,6 +157,14 @@ const Dashboard: React.FC = () => {
                                     <ViewColumnIcon />
                                 </ListItemIcon>
                                 <ListItemText primary={t('headerDefinitions')} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton component={Link} to="/dashboard/new-file-wizard" onClick={() => setSidebarOpen(false)}>
+                                <ListItemIcon>
+                                    <UploadFileIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={t('newFileWizard')} />
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
