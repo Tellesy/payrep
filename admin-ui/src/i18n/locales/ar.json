@@ -240,6 +240,9 @@
   "uploadFailed": "فشل التحميل. يرجى المحاولة مرة أخرى.",
   
   "configureFile": "تهيئة الملف",
+  "mapColumns": "تخطيط الأعمدة",
+  "setSchedule": "تعيين الجدول",
+  "confirm": "تأكيد",
   "hasHeader": "يحتوي على صف عناوين",
   "yes": "نعم",
   "no": "لا",
@@ -259,6 +262,10 @@
   "separatorPlaceholder": "مثال: _ أو - (اتركه فارغًا بدون فاصل)",
   "dateToken": "رمز التاريخ",
   "dateTokenHelp": "اختر جزء التاريخ كما يظهر في اسم الملف.",
+  "patternOrder": "ترتيب الأجزاء",
+  "dateBeforeCode": "التاريخ قبل الكود",
+  "codeBeforeDate": "الكود قبل التاريخ",
+  "patternOrderHelp": "اختر ما إذا كان كود البنك/المزود يظهر قبل أو بعد التاريخ.",
   "includeBankCode": "تضمين كود البنك/المزود",
   "includeCounter": "تضمين عدّاد",
   "counterPadLength": "طول حشو العدّاد",
@@ -268,6 +275,11 @@
 
   "cronSchedule": "الجدولة",
   "frequency": "التكرار",
+  "everyNMinutes": "كل N دقيقة",
+  "everyNHours": "كل N ساعة",
+  "minuteInterval": "فاصل الدقائق",
+  "hourInterval": "فاصل الساعات",
+  "minuteOfHour": "دقيقة من الساعة",
   "hourly": "كل ساعة",
   "daily": "يومي",
   "weekly": "أسبوعي",
@@ -283,5 +295,13 @@
   "wednesday": "الأربعاء",
   "thursday": "الخميس",
   "friday": "الجمعة",
-  "saturday": "السبت"
+  "saturday": "السبت",
+  "reviewBeforeFinish": "راجع اختياراتك قبل الإنهاء.",
+  "summarySource": "المصدر",
+  "summaryEntity": "الكيان",
+  "summaryMappings": "التعيينات",
+  "mappedFields": "حقول مُعيّنة",
+  "summaryPattern": "نمط اسم الملف",
+  "summaryCron": "الجدولة",
+  "movedToStep": "تم الانتقال إلى الخطوة"
 }

@@ -64,6 +64,7 @@ class FileWizardController(
         val delimiter: String?,
         val hasHeader: Boolean = true,
         val dateFormat: String? = null,
+        val dateToken: String? = null,
         val encoding: String? = null,
         val filePattern: String? = null,
         val skipRows: Int? = null,
@@ -71,10 +72,30 @@ class FileWizardController(
         // Structured filename pattern builder fields (optional)
         val patternPrefix: String? = null,
         val nameSeparator: String? = null, // e.g. "_", "-", ".", or ""
+        val patternOrder: String? = null, // "dateFirst" | "codeFirst"
         val includeBankCode: Boolean? = null,
         val includeCounter: Boolean? = null,
         val counterPadLength: Int? = null,
         val generatedPattern: String? = null
+    )
+
+    // --- Step 6: Finish payload ---
+    data class FinishRequest(
+        val sourceId: Long?,
+        val entity: String?,
+        val mappings: List<MappingEntry> = emptyList(),
+        val settings: FileSettings?,
+        val schedule: SchedulePayload?
+    )
+
+    data class SchedulePayload(
+        val frequency: String?,
+        val timeOfDay: String?,
+        val dayOfWeek: Int?,
+        val dayOfMonth: Int?,
+        val minuteInterval: Int?,
+        val hourInterval: Int?,
+        val cron: String?
     )
 
     private fun kotlinTypeToSimpleName(type: Class<*>): String {
@@ -197,6 +218,23 @@ class FileWizardController(
     fun saveSettings(@RequestBody settings: FileSettings): ResponseEntity<Void> {
         logger.info("Wizard settings received: {}", settings)
         // TODO: persist settings tied to a config draft/session; stubbed for now
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/finish", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun finish(@RequestBody body: FinishRequest): ResponseEntity<Void> {
+        logger.info(
+            "Wizard finish: sourceId={}, entity={}, mappings={}, cron={}",
+            body.sourceId,
+            body.entity,
+            body.mappings.size,
+            body.schedule?.cron
+        )
+        logger.info(" - settings: {}", body.settings)
+        body.mappings.forEach {
+            logger.info(" - map index={}, name='{}' -> '{}'", it.columnIndex, it.columnName, it.targetField)
+        }
+        // TODO: validate + persist all (FileProcessingConfig, ColumnMappings, schedule) and return created resource id
         return ResponseEntity.ok().build()
     }
 

@@ -19,7 +19,9 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Alert
+  Alert,
+  Fade,
+  Snackbar
 } from '@mui/material';
 
 interface DetectedColumn {
@@ -60,10 +62,11 @@ interface BankOrTpp {
   type: 'BANK' | 'TPP';
 }
 
-const steps = ['Upload & Detect', 'Assign to Source', 'Map Columns', 'Configure File', 'Set Schedule', 'Confirm'];
+// Step keys for i18n labels
+const stepKeys = ['uploadAndDetect', 'assignToSource', 'mapColumns', 'configureFile', 'setSchedule', 'confirm'] as const;
 
 const NewFileWizard: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { token } = useAuth();
 
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -91,13 +94,19 @@ const NewFileWizard: React.FC = () => {
   const [includeCounter, setIncludeCounter] = useState<boolean>(false);
   const [counterPadLength, setCounterPadLength] = useState<number>(2);
   const [generatedPattern, setGeneratedPattern] = useState<string>('');
+  const [patternOrder, setPatternOrder] = useState<'dateFirst' | 'codeFirst'>('dateFirst');
   
   // Step 5 cron builder state
-  const [frequency, setFrequency] = useState<'hourly' | 'daily' | 'weekly' | 'monthly'>('daily');
+  const [frequency, setFrequency] = useState<'everyNMinutes' | 'everyNHours' | 'hourly' | 'daily' | 'weekly' | 'monthly'>('daily');
   const [timeOfDay, setTimeOfDay] = useState<string>('02:00'); // HH:mm
   const [dayOfWeek, setDayOfWeek] = useState<number>(1); // 0=Sun..6=Sat
   const [dayOfMonth, setDayOfMonth] = useState<number>(1);
   const [cronExpr, setCronExpr] = useState<string>('0 0 2 * * *');
+  const [minuteInterval, setMinuteInterval] = useState<number>(15);
+  const [hourInterval, setHourInterval] = useState<number>(1);
+
+  // Step transition feedback
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
 
   // Build filename preview and glob based on selections
   const buildFilenamePreview = () => {
@@ -108,8 +117,15 @@ const NewFileWizard: React.FC = () => {
       .replace('YYYY', '2025')
       .replace('MM', '08')
       .replace('DD', '09');
-    if (dateToken) parts.push(dateSample);
-    if (includeBankCode) parts.push('{BANK_CODE}');
+    const datePart = dateToken ? dateSample : '';
+    const codePart = includeBankCode ? '{BANK_CODE}' : '';
+    if (patternOrder === 'dateFirst') {
+      if (datePart) parts.push(datePart);
+      if (codePart) parts.push(codePart);
+    } else {
+      if (codePart) parts.push(codePart);
+      if (datePart) parts.push(datePart);
+    }
     if (includeCounter) parts.push('{' + `COUNTER${counterPadLength ? `:pad${counterPadLength}` : ''}` + '}');
     const base = parts.join(sep);
     const ext = '.csv';
@@ -120,8 +136,15 @@ const NewFileWizard: React.FC = () => {
     const parts: string[] = [];
     if (patternPrefix) parts.push(patternPrefix);
     const sep = nameSeparator ?? '';
-    if (dateToken) parts.push('*');
-    if (includeBankCode) parts.push('*');
+    const datePart = dateToken ? '*' : '';
+    const codePart = includeBankCode ? '*' : '';
+    if (patternOrder === 'dateFirst') {
+      if (datePart) parts.push(datePart);
+      if (codePart) parts.push(codePart);
+    } else {
+      if (codePart) parts.push(codePart);
+      if (datePart) parts.push(datePart);
+    }
     if (includeCounter) parts.push('*');
     const base = parts.join(sep);
     return `${base}.csv`;
@@ -129,13 +152,21 @@ const NewFileWizard: React.FC = () => {
 
   useEffect(() => {
     setGeneratedPattern(buildGlob());
-  }, [patternPrefix, nameSeparator, dateToken, includeBankCode, includeCounter, counterPadLength]);
+  }, [patternPrefix, nameSeparator, dateToken, includeBankCode, includeCounter, counterPadLength, patternOrder]);
 
   // Build cron expression from inputs
   useEffect(() => {
     const [hh, mm] = timeOfDay.split(':').map((s) => parseInt(s || '0', 10));
     let expr = '0 0 2 * * *';
     switch (frequency) {
+      case 'everyNMinutes':
+        expr = `0 */${Math.max(1, minuteInterval)} * * * *`;
+        break;
+      case 'everyNHours': {
+        const [, mm] = timeOfDay.split(':').map((s) => parseInt(s || '0', 10));
+        expr = `0 ${isNaN(mm) ? 0 : mm} */${Math.max(1, hourInterval)} * * *`;
+        break;
+      }
       case 'hourly':
         expr = `0 0 * * * *`;
         break;
@@ -150,7 +181,14 @@ const NewFileWizard: React.FC = () => {
         break;
     }
     setCronExpr(expr);
-  }, [frequency, timeOfDay, dayOfWeek, dayOfMonth]);
+  }, [frequency, timeOfDay, dayOfWeek, dayOfMonth, minuteInterval, hourInterval]);
+
+  // Show snackbar on step change
+  useEffect(() => {
+    if (activeStep >= 0) {
+      setSnackbarOpen(true);
+    }
+  }, [activeStep]);
 
   // Small helper to format Authorization header robustly
   const getAuthHeader = (tok?: string | null) => {
@@ -355,6 +393,7 @@ const NewFileWizard: React.FC = () => {
             includeBankCode,
             includeCounter,
             counterPadLength,
+            patternOrder,
             generatedPattern
           })
         });
@@ -374,21 +413,81 @@ const NewFileWizard: React.FC = () => {
       }
       return;
     }
-    setActiveStep((s) => Math.min(s + 1, steps.length - 1));
+    if (activeStep === 5) {
+      // Finalize: send summary to backend (if endpoint exists)
+      (async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          if (!token) { setError(t('pleaseLoginAgain')); return; }
+          const payload = {
+            sourceId: selectedSourceId || null,
+            entity: selectedEntity,
+            mappings: mappings.filter(m => !!m.targetField),
+            settings: {
+              hasHeader,
+              dateFormat,
+              encoding,
+              filePattern,
+              skipRows,
+              quoteChar,
+              patternPrefix,
+              nameSeparator,
+              dateToken,
+              includeBankCode,
+              includeCounter,
+              counterPadLength,
+              patternOrder,
+              generatedPattern
+            },
+            schedule: {
+              frequency,
+              timeOfDay,
+              dayOfWeek,
+              dayOfMonth,
+              minuteInterval,
+              hourInterval,
+              cron: cronExpr
+            }
+          };
+          const res = await fetch('/api/admin/wizard/finish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: getAuthHeader(token)! },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) {
+            if (res.status === 401) { setError(t('pleaseLoginAgain')); return; }
+            if (res.status === 403) { setError(t('forbidden')); return; }
+            const text = await res.text();
+            setError(text || t('networkError'));
+            return;
+          }
+          setSnackbarOpen(true);
+          setActiveStep(0);
+        } catch (e:any) {
+          console.error(e);
+          setError(t('networkError'));
+        } finally {
+          setLoading(false);
+        }
+      })();
+      return;
+    }
+    setActiveStep((s) => Math.min(s + 1, stepKeys.length - 1));
   };
 
   const handleBack = () => setActiveStep((s) => Math.max(s - 1, 0));
 
   return (
-    <Paper sx={{ p: 3 }}>
+    <Paper sx={{ p: 3 }} dir={i18n.dir()}>
       <Typography variant="h5" gutterBottom>
         {t('newFileWizard')}
       </Typography>
 
       <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 3 }}>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
+        {stepKeys.map((k) => (
+          <Step key={k}>
+            <StepLabel>{t(k)}</StepLabel>
           </Step>
         ))}
       </Stepper>
@@ -399,6 +498,8 @@ const NewFileWizard: React.FC = () => {
         </Alert>
       )}
 
+      <Fade in timeout={250}>
+        <div>
       {activeStep === 3 && (
         <Box>
           <Typography variant="h6" gutterBottom>
@@ -470,6 +571,19 @@ const NewFileWizard: React.FC = () => {
               </Select>
             </FormControl>
             <Alert severity="info">{t('dateTokenHelp') || 'Choose the date portion as it appears in the file name.'}</Alert>
+            <FormControl fullWidth>
+              <InputLabel id="order-label">{t('patternOrder') || 'Order of parts'}</InputLabel>
+              <Select
+                labelId="order-label"
+                label={t('patternOrder') || 'Order of parts'}
+                value={patternOrder}
+                onChange={(e) => setPatternOrder(e.target.value as any)}
+              >
+                <MenuItem value="dateFirst">{t('dateBeforeCode') || 'Date before code'}</MenuItem>
+                <MenuItem value="codeFirst">{t('codeBeforeDate') || 'Code before date'}</MenuItem>
+              </Select>
+            </FormControl>
+            <Alert severity="info">{t('patternOrderHelp') || 'Choose whether the bank/TPP code appears before or after the date.'}</Alert>
             <FormControl fullWidth>
               <InputLabel id="include-bank-label">{t('includeBankCode') || 'Include bank/TPP code'}</InputLabel>
               <Select
@@ -569,12 +683,46 @@ const NewFileWizard: React.FC = () => {
                 value={frequency}
                 onChange={(e) => setFrequency(e.target.value as any)}
               >
+                <MenuItem value="everyNMinutes">{t('everyNMinutes') || 'Every N minutes'}</MenuItem>
+                <MenuItem value="everyNHours">{t('everyNHours') || 'Every N hours'}</MenuItem>
                 <MenuItem value="hourly">{t('hourly') || 'Hourly'}</MenuItem>
                 <MenuItem value="daily">{t('daily') || 'Daily'}</MenuItem>
                 <MenuItem value="weekly">{t('weekly') || 'Weekly'}</MenuItem>
                 <MenuItem value="monthly">{t('monthly') || 'Monthly'}</MenuItem>
               </Select>
             </FormControl>
+
+            {frequency === 'everyNMinutes' && (
+              <TextField
+                type="number"
+                label={t('minuteInterval') || 'Minute interval'}
+                value={minuteInterval}
+                onChange={(e) => setMinuteInterval(parseInt(e.target.value || '1', 10))}
+                inputProps={{ min: 1, max: 59 }}
+                fullWidth
+              />
+            )}
+
+            {frequency === 'everyNHours' && (
+              <>
+                <TextField
+                  type="number"
+                  label={t('hourInterval') || 'Hour interval'}
+                  value={hourInterval}
+                  onChange={(e) => setHourInterval(parseInt(e.target.value || '1', 10))}
+                  inputProps={{ min: 1, max: 23 }}
+                  fullWidth
+                />
+                <TextField
+                  label={t('minuteOfHour') || 'Minute of hour'}
+                  type="number"
+                  value={parseInt((timeOfDay.split(':')[1] || '0'), 10)}
+                  onChange={(e) => setTimeOfDay(`${timeOfDay.split(':')[0] || '00'}:${String(Math.min(59, Math.max(0, parseInt(e.target.value || '0', 10))).toString().padStart(2, '0'))}`)}
+                  inputProps={{ min: 0, max: 59 }}
+                  fullWidth
+                />
+              </>
+            )}
 
             {(frequency === 'daily' || frequency === 'weekly' || frequency === 'monthly') && (
               <TextField
@@ -631,6 +779,24 @@ const NewFileWizard: React.FC = () => {
           </Alert>
         </Box>
       )}
+
+      {activeStep === 5 && (
+        <Box>
+          <Typography variant="h6" gutterBottom>
+            {t('confirm')}
+          </Typography>
+          <Box sx={{ maxWidth: 900 }}>
+            <Alert severity="info" sx={{ mb: 2 }}>{t('reviewBeforeFinish') || 'Review your selections before finishing.'}</Alert>
+            <Typography variant="subtitle1">{t('summarySource') || 'Source'}: {banks.find(b => b.id === selectedSourceId)?.name || '-'}</Typography>
+            <Typography variant="subtitle1">{t('summaryEntity') || 'Entity'}: {selectedEntity || '-'}</Typography>
+            <Typography variant="subtitle1">{t('summaryMappings') || 'Mappings'}: {mappings.filter(m=>m.targetField).length} {t('mappedFields') || 'mapped fields'}</Typography>
+            <Typography variant="subtitle1">{t('summaryPattern') || 'Filename Pattern'}: {buildFilenamePreview()} ({generatedPattern})</Typography>
+            <Typography variant="subtitle1">{t('summaryCron') || 'Schedule'}: <code>{cronExpr}</code></Typography>
+          </Box>
+        </Box>
+      )}
+        </div>
+      </Fade>
 
       {activeStep === 0 && (
         <Box>
@@ -816,10 +982,18 @@ const NewFileWizard: React.FC = () => {
               (activeStep === 2 && (!selectedEntity))
             }
           >
-            {t('next')}
+            {activeStep === 5 ? (t('finish') || 'Finish') : t('next')}
           </Button>
         )}
       </Box>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={1200}
+        onClose={() => setSnackbarOpen(false)}
+        message={`${t('movedToStep') || 'Moved to step'}: ${t(stepKeys[activeStep])}`}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Paper>
   );
 };

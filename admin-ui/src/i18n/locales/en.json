@@ -243,6 +243,9 @@
   "uploadFailed": "Upload failed. Please try again.",
   
   "configureFile": "Configure File",
+  "mapColumns": "Map Columns",
+  "setSchedule": "Set Schedule",
+  "confirm": "Confirm",
   "hasHeader": "Has Header Row",
   "yes": "Yes",
   "no": "No",
@@ -262,6 +265,10 @@
   "separatorPlaceholder": "e.g. _ or - (leave empty for no separator)",
   "dateToken": "Date token",
   "dateTokenHelp": "Choose the date portion as it appears in the file name.",
+  "patternOrder": "Order of parts",
+  "dateBeforeCode": "Date before code",
+  "codeBeforeDate": "Code before date",
+  "patternOrderHelp": "Choose whether the bank/TPP code appears before or after the date.",
   "includeBankCode": "Include bank/TPP code",
   "includeCounter": "Include counter",
   "counterPadLength": "Counter pad length",
@@ -271,6 +278,11 @@
 
   "cronSchedule": "Schedule",
   "frequency": "Frequency",
+  "everyNMinutes": "Every N minutes",
+  "everyNHours": "Every N hours",
+  "minuteInterval": "Minute interval",
+  "hourInterval": "Hour interval",
+  "minuteOfHour": "Minute of hour",
   "hourly": "Hourly",
   "daily": "Daily",
   "weekly": "Weekly",
@@ -287,4 +299,13 @@
   "thursday": "Thursday",
   "friday": "Friday",
   "saturday": "Saturday"
+  ,
+  "reviewBeforeFinish": "Review your selections before finishing.",
+  "summarySource": "Source",
+  "summaryEntity": "Entity",
+  "summaryMappings": "Mappings",
+  "mappedFields": "mapped fields",
+  "summaryPattern": "Filename Pattern",
+  "summaryCron": "Schedule",
+  "movedToStep": "Moved to step"
 }
