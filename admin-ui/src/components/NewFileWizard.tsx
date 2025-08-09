@@ -76,6 +76,81 @@ const NewFileWizard: React.FC = () => {
   const [mappings, setMappings] = useState<MappingEntry[]>([]);
   const [entities, setEntities] = useState<EntityDescriptor[]>([]);
   const [selectedEntity, setSelectedEntity] = useState<string>('');
+  // Step 4 settings state
+  const [hasHeader, setHasHeader] = useState<boolean>(true);
+  const [dateFormat, setDateFormat] = useState<string>('yyyy-MM-dd');
+  const [encoding, setEncoding] = useState<string>('UTF-8');
+  const [filePattern, setFilePattern] = useState<string>('*.csv');
+  const [skipRows, setSkipRows] = useState<number>(0);
+  const [quoteChar, setQuoteChar] = useState<string>('"');
+  // Step 4 pattern builder state
+  const [patternPrefix, setPatternPrefix] = useState<string>('');
+  const [nameSeparator, setNameSeparator] = useState<string>('_');
+  const [dateToken, setDateToken] = useState<string>('YYYY-MM-DD');
+  const [includeBankCode, setIncludeBankCode] = useState<boolean>(true);
+  const [includeCounter, setIncludeCounter] = useState<boolean>(false);
+  const [counterPadLength, setCounterPadLength] = useState<number>(2);
+  const [generatedPattern, setGeneratedPattern] = useState<string>('');
+  
+  // Step 5 cron builder state
+  const [frequency, setFrequency] = useState<'hourly' | 'daily' | 'weekly' | 'monthly'>('daily');
+  const [timeOfDay, setTimeOfDay] = useState<string>('02:00'); // HH:mm
+  const [dayOfWeek, setDayOfWeek] = useState<number>(1); // 0=Sun..6=Sat
+  const [dayOfMonth, setDayOfMonth] = useState<number>(1);
+  const [cronExpr, setCronExpr] = useState<string>('0 0 2 * * *');
+
+  // Build filename preview and glob based on selections
+  const buildFilenamePreview = () => {
+    const parts: string[] = [];
+    if (patternPrefix) parts.push(patternPrefix);
+    const sep = nameSeparator ?? '';
+    const dateSample = dateToken
+      .replace('YYYY', '2025')
+      .replace('MM', '08')
+      .replace('DD', '09');
+    if (dateToken) parts.push(dateSample);
+    if (includeBankCode) parts.push('{BANK_CODE}');
+    if (includeCounter) parts.push('{' + `COUNTER${counterPadLength ? `:pad${counterPadLength}` : ''}` + '}');
+    const base = parts.join(sep);
+    const ext = '.csv';
+    return base + ext;
+  };
+
+  const buildGlob = () => {
+    const parts: string[] = [];
+    if (patternPrefix) parts.push(patternPrefix);
+    const sep = nameSeparator ?? '';
+    if (dateToken) parts.push('*');
+    if (includeBankCode) parts.push('*');
+    if (includeCounter) parts.push('*');
+    const base = parts.join(sep);
+    return `${base}.csv`;
+  };
+
+  useEffect(() => {
+    setGeneratedPattern(buildGlob());
+  }, [patternPrefix, nameSeparator, dateToken, includeBankCode, includeCounter, counterPadLength]);
+
+  // Build cron expression from inputs
+  useEffect(() => {
+    const [hh, mm] = timeOfDay.split(':').map((s) => parseInt(s || '0', 10));
+    let expr = '0 0 2 * * *';
+    switch (frequency) {
+      case 'hourly':
+        expr = `0 0 * * * *`;
+        break;
+      case 'daily':
+        expr = `0 ${mm || 0} ${hh || 0} * * *`;
+        break;
+      case 'weekly':
+        expr = `0 ${mm || 0} ${hh || 0} * * ${dayOfWeek}`;
+        break;
+      case 'monthly':
+        expr = `0 ${mm || 0} ${hh || 0} ${dayOfMonth} * *`;
+        break;
+    }
+    setCronExpr(expr);
+  }, [frequency, timeOfDay, dayOfWeek, dayOfMonth]);
 
   // Small helper to format Authorization header robustly
   const getAuthHeader = (tok?: string | null) => {
@@ -253,6 +328,52 @@ const NewFileWizard: React.FC = () => {
       }
       return;
     }
+    if (activeStep === 3) {
+      // Save file settings (temporary backend stub) then proceed to Step 5
+      try {
+        setLoading(true);
+        setError(null);
+        if (!token) { setError(t('pleaseLoginAgain')); return; }
+        const res = await fetch('/api/admin/wizard/settings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: getAuthHeader(token)!
+          },
+          body: JSON.stringify({
+            sourceId: selectedSourceId || null,
+            fileName: detectResult?.fileName || null,
+            delimiter: detectResult?.delimiter || ',',
+            hasHeader,
+            dateFormat,
+            encoding,
+            filePattern,
+            skipRows,
+            quoteChar,
+            patternPrefix,
+            nameSeparator,
+            includeBankCode,
+            includeCounter,
+            counterPadLength,
+            generatedPattern
+          })
+        });
+        if (!res.ok) {
+          if (res.status === 401) { setError(t('pleaseLoginAgain')); return; }
+          if (res.status === 403) { setError(t('forbidden')); return; }
+          const text = await res.text();
+          setError(text || t('networkError'));
+          return;
+        }
+        setActiveStep(4);
+      } catch (e:any) {
+        console.error(e);
+        setError(t('networkError'));
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
     setActiveStep((s) => Math.min(s + 1, steps.length - 1));
   };
 
@@ -276,6 +397,239 @@ const NewFileWizard: React.FC = () => {
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
         </Alert>
+      )}
+
+      {activeStep === 3 && (
+        <Box>
+          <Typography variant="h6" gutterBottom>
+            {t('configureFile')}
+          </Typography>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2, maxWidth: 1000 }}>
+            <FormControl fullWidth>
+              <InputLabel id="has-header-label">{t('hasHeader') || 'Has Header Row'}</InputLabel>
+              <Select
+                labelId="has-header-label"
+                label={t('hasHeader') || 'Has Header Row'}
+                value={hasHeader ? 'yes' : 'no'}
+                onChange={(e) => setHasHeader((e.target.value as string) === 'yes')}
+              >
+                <MenuItem value="yes">{t('yes') || 'Yes'}</MenuItem>
+                <MenuItem value="no">{t('no') || 'No'}</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              label={t('dateFormat') || 'Date Format'}
+              value={dateFormat}
+              onChange={(e) => setDateFormat(e.target.value)}
+              fullWidth
+            />
+
+            <TextField
+              label={t('encoding') || 'Encoding'}
+              value={encoding}
+              onChange={(e) => setEncoding(e.target.value)}
+              fullWidth
+            />
+
+            <TextField
+              label={t('filePattern') || 'File Pattern'}
+              value={filePattern}
+              onChange={(e) => setFilePattern(e.target.value)}
+              helperText={t('globPatternExample') || 'e.g., *.csv or TPP901_*.csv'}
+              fullWidth
+            />
+
+            {/* Pattern Builder */}
+            <TextField
+              label={t('constantPrefix') || 'Constant name prefix'}
+              value={patternPrefix}
+              onChange={(e) => setPatternPrefix(e.target.value)}
+              helperText={t('constantPrefixHelp') || 'Static part at file start, e.g. TPP901 or BANKPOS'}
+              fullWidth
+            />
+            <TextField
+              label={t('nameSeparator') || 'Name separator'}
+              value={nameSeparator}
+              onChange={(e) => setNameSeparator(e.target.value)}
+              helperText={t('separatorPlaceholder') || 'e.g. _ or - (leave empty for no separator)'}
+              fullWidth
+            />
+            <FormControl fullWidth>
+              <InputLabel id="date-token-label">{t('dateToken') || 'Date token'}</InputLabel>
+              <Select
+                labelId="date-token-label"
+                label={t('dateToken') || 'Date token'}
+                value={dateToken}
+                onChange={(e) => setDateToken(e.target.value as string)}
+              >
+                <MenuItem value="YYYY-MM-DD">YYYY-MM-DD</MenuItem>
+                <MenuItem value="DD-MM-YYYY">DD-MM-YYYY</MenuItem>
+                <MenuItem value="YYYYMMDD">YYYYMMDD</MenuItem>
+                <MenuItem value="DDMMYYYY">DDMMYYYY</MenuItem>
+              </Select>
+            </FormControl>
+            <Alert severity="info">{t('dateTokenHelp') || 'Choose the date portion as it appears in the file name.'}</Alert>
+            <FormControl fullWidth>
+              <InputLabel id="include-bank-label">{t('includeBankCode') || 'Include bank/TPP code'}</InputLabel>
+              <Select
+                labelId="include-bank-label"
+                label={t('includeBankCode') || 'Include bank/TPP code'}
+                value={includeBankCode ? 'yes' : 'no'}
+                onChange={(e) => setIncludeBankCode((e.target.value as string) === 'yes')}
+              >
+                <MenuItem value="yes">{t('yes') || 'Yes'}</MenuItem>
+                <MenuItem value="no">{t('no') || 'No'}</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="include-counter-label">{t('includeCounter') || 'Include counter'}</InputLabel>
+              <Select
+                labelId="include-counter-label"
+                label={t('includeCounter') || 'Include counter'}
+                value={includeCounter ? 'yes' : 'no'}
+                onChange={(e) => setIncludeCounter((e.target.value as string) === 'yes')}
+              >
+                <MenuItem value="yes">{t('yes') || 'Yes'}</MenuItem>
+                <MenuItem value="no">{t('no') || 'No'}</MenuItem>
+              </Select>
+            </FormControl>
+            {includeCounter && (
+              <TextField
+                type="number"
+                label={t('counterPadLength') || 'Counter pad length'}
+                value={counterPadLength}
+                onChange={(e) => setCounterPadLength(parseInt(e.target.value || '0', 10))}
+                inputProps={{ min: 1, max: 6 }}
+                helperText={t('counterPadHelp') || 'Number of digits for the counter, e.g. 2 -> 01, 3 -> 002'}
+                fullWidth
+              />
+            )}
+
+            <TextField
+              label={t('filenamePreview') || 'Filename preview'}
+              value={buildFilenamePreview()}
+              fullWidth
+              disabled
+            />
+            <TextField
+              label={t('generatedGlob') || 'Generated glob pattern'}
+              value={generatedPattern}
+              fullWidth
+              disabled
+            />
+
+            <TextField
+              type="number"
+              label={t('skipRows') || 'Skip Rows'}
+              value={skipRows}
+              onChange={(e) => setSkipRows(Number(e.target.value))}
+              fullWidth
+              inputProps={{ min: 0 }}
+            />
+
+            <TextField
+              label={t('quoteChar') || 'Quote Character'}
+              value={quoteChar}
+              onChange={(e) => setQuoteChar(e.target.value)}
+              fullWidth
+            />
+
+            <TextField
+              label={t('delimiter') || 'Delimiter'}
+              value={detectResult?.delimiter || ','}
+              disabled
+              fullWidth
+            />
+
+            <TextField
+              label={t('fileName') || 'File Name'}
+              value={detectResult?.fileName || ''}
+              disabled
+              fullWidth
+            />
+          </Box>
+          <Alert severity="info" sx={{ mt: 2 }}>
+            {t('configureFileHelp') || 'Configure parsing options. These settings will be saved with the file type.'}
+          </Alert>
+        </Box>
+      )}
+
+      {activeStep === 4 && (
+        <Box>
+          <Typography variant="h6" gutterBottom>
+            {t('cronSchedule') || 'Schedule'}
+          </Typography>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2, maxWidth: 800 }}>
+            <FormControl fullWidth>
+              <InputLabel id="freq-label">{t('frequency') || 'Frequency'}</InputLabel>
+              <Select
+                labelId="freq-label"
+                label={t('frequency') || 'Frequency'}
+                value={frequency}
+                onChange={(e) => setFrequency(e.target.value as any)}
+              >
+                <MenuItem value="hourly">{t('hourly') || 'Hourly'}</MenuItem>
+                <MenuItem value="daily">{t('daily') || 'Daily'}</MenuItem>
+                <MenuItem value="weekly">{t('weekly') || 'Weekly'}</MenuItem>
+                <MenuItem value="monthly">{t('monthly') || 'Monthly'}</MenuItem>
+              </Select>
+            </FormControl>
+
+            {(frequency === 'daily' || frequency === 'weekly' || frequency === 'monthly') && (
+              <TextField
+                label={t('timeOfDay') || 'Time of day'}
+                type="time"
+                value={timeOfDay}
+                onChange={(e) => setTimeOfDay(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                inputProps={{ step: 300 }}
+                fullWidth
+              />
+            )}
+
+            {frequency === 'weekly' && (
+              <FormControl fullWidth>
+                <InputLabel id="dow-label">{t('dayOfWeek') || 'Day of week'}</InputLabel>
+                <Select
+                  labelId="dow-label"
+                  label={t('dayOfWeek') || 'Day of week'}
+                  value={dayOfWeek}
+                  onChange={(e) => setDayOfWeek(e.target.value as number)}
+                >
+                  <MenuItem value={0}>{t('sunday') || 'Sunday'}</MenuItem>
+                  <MenuItem value={1}>{t('monday') || 'Monday'}</MenuItem>
+                  <MenuItem value={2}>{t('tuesday') || 'Tuesday'}</MenuItem>
+                  <MenuItem value={3}>{t('wednesday') || 'Wednesday'}</MenuItem>
+                  <MenuItem value={4}>{t('thursday') || 'Thursday'}</MenuItem>
+                  <MenuItem value={5}>{t('friday') || 'Friday'}</MenuItem>
+                  <MenuItem value={6}>{t('saturday') || 'Saturday'}</MenuItem>
+                </Select>
+              </FormControl>
+            )}
+
+            {frequency === 'monthly' && (
+              <TextField
+                type="number"
+                label={t('dayOfMonth') || 'Day of month'}
+                value={dayOfMonth}
+                onChange={(e) => setDayOfMonth(parseInt(e.target.value || '1', 10))}
+                inputProps={{ min: 1, max: 28 }}
+                fullWidth
+              />
+            )}
+
+            <TextField
+              label={t('cronExpression') || 'Cron expression'}
+              value={cronExpr}
+              fullWidth
+              disabled
+            />
+          </Box>
+          <Alert severity="info" sx={{ mt: 2 }}>
+            {t('cronHelp') || 'Pick how often to import. We will run at the configured schedule.'}
+          </Alert>
+        </Box>
       )}
 
       {activeStep === 0 && (

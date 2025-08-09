@@ -58,6 +58,25 @@ class FileWizardController(
         val fields: List<FieldDescriptor>
     )
 
+    data class FileSettings(
+        val sourceId: Long?,
+        val fileName: String?,
+        val delimiter: String?,
+        val hasHeader: Boolean = true,
+        val dateFormat: String? = null,
+        val encoding: String? = null,
+        val filePattern: String? = null,
+        val skipRows: Int? = null,
+        val quoteChar: String? = null,
+        // Structured filename pattern builder fields (optional)
+        val patternPrefix: String? = null,
+        val nameSeparator: String? = null, // e.g. "_", "-", ".", or ""
+        val includeBankCode: Boolean? = null,
+        val includeCounter: Boolean? = null,
+        val counterPadLength: Int? = null,
+        val generatedPattern: String? = null
+    )
+
     private fun kotlinTypeToSimpleName(type: Class<*>): String {
         return when (type.name) {
             "java.lang.String" -> "String"
@@ -172,6 +191,13 @@ class FileWizardController(
 
         val merged = (reflected + dynamic).distinctBy { it.name }
         return ResponseEntity.ok(merged)
+    }
+
+    @PostMapping("/settings", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun saveSettings(@RequestBody settings: FileSettings): ResponseEntity<Void> {
+        logger.info("Wizard settings received: {}", settings)
+        // TODO: persist settings tied to a config draft/session; stubbed for now
+        return ResponseEntity.ok().build()
     }
 
     @PostMapping("/mappings", consumes = [MediaType.APPLICATION_JSON_VALUE])
