@@ -77,3 +77,16 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.OracleDialect
+
+# --- Wizard dynamic entity configuration ---
+# You can add new entities to the mapping wizard dropdown without code changes.
+# Example structure:
+# wizard:
+#   dynamicEntities:
+#     - name: CustomEntity
+#       fields:
+#         - name: sampleField
+#           type: String
+#           required: true
+wizard:
+  dynamicEntities: []
